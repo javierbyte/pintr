@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href="https://javier.xyz/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PINTR</title>
+    
+  <script type="module" crossorigin src="/assets/index.492de3ee.js"></script>
+  <link rel="modulepreload" href="/assets/vendor.d7bea3fb.js">
+  <link rel="stylesheet" href="/assets/index.72e2a86f.css">
+</head>
+  <body>
+    <div class="flex">
+      <h1>PINTR</h1>
+
+      <button id="inputbutton" type="file">New image</button>
+      <input id="inp" type="file" />
+    </div>
+
+    <canvas id="draw"></canvas><canvas id="src" style="display: none"></canvas>
+    <div id="srcimg"></div>
+
+    <div class="input-container">
+      <div class="input">
+        <label for="lines">Lines</label>
+        <input type="range" id="lines" min="10" max="90" value="50" />
+      </div>
+
+      <div class="input">
+        <label for="contrast">Contrast</label>
+        <input type="range" id="contrast" min="20" max="90" value="70" />
+      </div>
+
+      <div class="input">
+        <label for="definition">Definition</label>
+        <input type="range" id="definition" min="4" max="24" value="16" />
+      </div>
+
+      <div class="input">
+        <label for="singleline">Single Line</label>
+        <input
+          type="range"
+          class="toggle"
+          id="singleline"
+          min="0"
+          max="1"
+          value="1"
+        />
+      </div>
+    </div>
+
+    <div class="instructions">
+      <strong>1.</strong> Select an image, images with a face, white or light
+      backgrounds and good contrast work better. <strong>2.</strong> Play with
+      the controls. <strong>3.</strong> Download. Created by Javierbyte. V0.0.5
+    </div>
+
+    <div class="flex">
+      <button id="download">Download PNG</button>
+      <button id="downloadsvg">Download SVG</button>
+    </div>
+
+    <div class="loading"><span>Loading...</span></div>
+
+    <script src="./weights/face-api.min.js"></script>
+    
+    <link rel="stylesheet" href="https://use.typekit.net/hty6cym.css" />
+  </body>
+</html>
