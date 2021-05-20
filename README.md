@@ -29,8 +29,8 @@ This is an exported SVG animated using [Vivus](https://maxwellito.github.io/vivu
 ## How does it work?
 
 1. The image is normalized for brightness and transformed to grayscale. See [canvasDataToGrayscale](https://github.com/javierbyte/pintr/blob/master/lib/canvasDataToGrayscale.js).
-2. A point in the canvas is selected and a line starts looking for different paths to draw next. [See scan functions](https://github.com/javierbyte/pintr/blob/master/transforms/scan.js)
-3. Lines are [batched to be drawn](https://github.com/javierbyte/pintr/blob/master/transforms/draw.js) and get flushed almost every frame.
-4. Results are exported as svg as a very simple `polyline`, see [generateSvg](https://github.com/javierbyte/pintr/blob/master/transforms/svg.js).
+2. A point in the canvas is selected and a line starts looking for different paths to draw next. [See scan functions](https://github.com/javierbyte/pintr/blob/master/lib/scan.js)
+3. Lines are [batched to be drawn](https://github.com/javierbyte/pintr/blob/master/lib/draw.js) and get flushed almost every frame.
+4. Results are exported as svg as a very simple `polyline`, see [generateSvg](https://github.com/javierbyte/pintr/blob/master/lib/svg.js).
 
 Pixel data and resizing were made using [`canvas-image-utils`](https://github.com/javierbyte/canvas-image-utils), better face definition using [`face-api`](https://github.com/justadudewhohacks/face-api.js/).
