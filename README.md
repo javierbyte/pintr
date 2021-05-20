@@ -18,6 +18,8 @@ Thanks [@sableRaph](https://twitter.com/sableRaph) for helping me create those. 
 
 ![](public/axidraw-2.jpg)
 
+https://user-images.githubusercontent.com/2009676/119021927-4ba5e000-b9a0-11eb-9ad7-1f9e54e823ae.mp4
+
 ### Animated Example
 
 This is an exported SVG animated using [Vivus](https://maxwellito.github.io/vivus-instant/).
