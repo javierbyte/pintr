@@ -22,7 +22,7 @@ Thanks [@sableRaph](https://twitter.com/sableRaph) for helping me create those. 
 
 This is an exported SVG animated using [Vivus](https://maxwellito.github.io/vivus-instant/).
 
-[![pintr](public/animated-example-3.svg)](https://javier.xyz/pintr/)
+![pintr](public/animated-example-3.svg)
 
 ## How does it work?
 
