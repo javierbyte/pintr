@@ -4,6 +4,20 @@ Create single line SVG illustrations from your pictures.
 
 [![pintr](public/thumbnail.jpg)](https://javier.xyz/pintr/)
 
+## Examples
+
+![](public/example-1.jpg)]
+
+![](public/example-2.jpg)]
+
+## Plotter Art
+
+Thanks [@sableRaph](https://twitter.com/sableRaph) for helping me create those. Using an AxiDraw.
+
+![](public/axidraw-1.jpg)]
+
+![](public/axidraw-2.jpg)]
+
 ### Animated Example
 
 This is an exported SVG animated using [Vivus](https://maxwellito.github.io/vivus-instant/).
