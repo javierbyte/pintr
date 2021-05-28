@@ -22,6 +22,7 @@ const DRAW_SIZE = 1080;
 
 const ORIGINAL_CONFIG = {
   singleLine: true,
+  faceApi: false,
   baseLineNumber: 4 * 1000,
   updateSampleRate: 256,
   addColor: "#000",
@@ -58,10 +59,12 @@ async function main(imgSrc) {
   const { canvasData, averageLightness } = canvasDataToGrayscale(data);
   data.ctx.putImageData(canvasData, 0, 0);
 
-  try {
-    await faceDetector(canvasSrcEl, data.ctx);
-  } catch (e) {
-    console.warn("no face");
+  if (CONFIG.faceApi) {
+    try {
+      await faceDetector(canvasSrcEl, data.ctx);
+    } catch (e) {
+      console.warn("no face");
+    }
   }
 
   document.querySelector(".loading").style.display = "none";
@@ -192,16 +195,25 @@ function readFile() {
 // UI
 function onChangeSettings() {
   const lines = document.querySelector("input[type='range']#lines").value;
-  const singleline = document.querySelector("input[type='range']#singleline")
-    .value;
+  const singleline = document.querySelector(
+    "input[type='range']#singleline"
+  ).value;
+  const faceApi = document.querySelector("input[type='range']#faceapi").value;
   const contrast = document.querySelector("input[type='range']#contrast").value;
-  const definition = document.querySelector("input[type='range']#definition")
-    .value;
+  const definition = document.querySelector(
+    "input[type='range']#definition"
+  ).value;
 
   CONFIG.baseLineNumber = (ORIGINAL_CONFIG.baseLineNumber / 50) * lines;
   CONFIG.substractionColor = `rgba(255, 255, 255, ${100 - contrast}%)`;
   CONFIG.precisionRange = [definition, definition * 2];
   CONFIG.singleLine = Number(singleline) ? true : false;
+  CONFIG.faceApi = Number(faceApi) ? true : false;
+
+  if (CONFIG.faceApi) {
+    document.querySelector(".loading").style.display = "block";
+  }
+
   main(window.IMAGE_SRC);
 }
 

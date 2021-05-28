@@ -188,6 +188,7 @@ input[type="range"].toggle::-moz-range-thumb {
 }
 
 .loading {
+  padding: 10vmin;
   cursor: default;
   font-size: 48px;
   letter-spacing: -1px;

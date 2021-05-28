@@ -69,13 +69,27 @@
           value="1"
         />
       </div>
+
+      <div class="input">
+        <label for="faceapi">Face Detection</label>
+        <input
+          type="range"
+          class="toggle"
+          id="faceapi"
+          min="0"
+          max="1"
+          value="0"
+        />
+      </div>
     </div>
 
     <div class="instructions">
       <strong>1.</strong> Select an image, images with a face, white or light
       backgrounds and good contrast work better. <strong>2.</strong> Play with
-      the controls. <strong>3.</strong> Download. Created by
-      <a href="https://twitter.com/javierbyte">Javierbyte</a>.
+      the controls. <strong>3.</strong> Download. Your photos never leave your computer. More information and source
+      available on <a href="https://github.com/javierbyte/pintr">Github</a>.
+      Created by <a href="https://twitter.com/javierbyte">Javierbyte</a>.
+      <a href="https://www.hicetnunc.xyz/objkt/91305">Buy the NFT</a>.
     </div>
 
     <div class="flex">
@@ -83,7 +97,7 @@
       <button id="downloadsvg">Download SVG</button>
     </div>
 
-    <div class="loading"><span>Loading...</span></div>
+    <div class="loading"><span>Face detection is working...</span></div>
 
     <script src="./weights/face-api.min.js"></script>
     <script type="module" src="/main.js"></script>
