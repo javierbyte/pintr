@@ -1,6 +1,8 @@
 # [Pintr](https://javier.xyz/pintr/)
 
-Create single line SVG illustrations from your pictures.
+Turn your images into plotter-like line drawings, create single line SVG illustrations from your pictures.
+
+All the processing is made locally, your images never leave your computer and you are free to use them as you please.
 
 [![pintr](public/thumbnail.jpg)](https://javier.xyz/pintr/)
 

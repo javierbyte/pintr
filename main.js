@@ -1,13 +1,11 @@
 import {
-  imageToRGBArray,
-  imageToRGBMatrix,
   imageToRawData,
   ctxToRGBMatrix,
 } from "canvas-image-utils";
 
 import { canvasDataToGrayscale } from "./lib/canvasDataToGrayscale.js";
-import { scanLine, weightedScan } from "./lib/scan.js";
-import { generateSvg, generatePolySvg } from "./lib/svg.js";
+import { scanLine } from "./lib/scan.js";
+import { generatePolySvg } from "./lib/svg.js";
 
 import { intRnd, debounce } from "./lib/utils.js";
 import { faceDetector } from "./lib/face.js";
@@ -24,7 +22,7 @@ const ORIGINAL_CONFIG = {
   singleLine: true,
   faceApi: false,
   baseLineNumber: 4 * 1000,
-  updateSampleRate: 256,
+  updateSampleRate: 128,
   addColor: "#000",
   substractionColor: "rgba(255,255,255,30%)",
   precisionRange: [16, 28],
@@ -124,7 +122,7 @@ async function main(imgSrc) {
         Math.floor(Math.random() * DRAW_SIZE),
       ];
 
-      const tmpLight = weightedScan(from, tmpTo, S.matrix, true);
+      const tmpLight = scanLine(from, tmpTo, S.matrix, true);
 
       if (tmpLight <= light) {
         light = tmpLight;
@@ -132,7 +130,7 @@ async function main(imgSrc) {
       }
     }
 
-    light = weightedScan(from, to, S.matrix, true);
+    light = scanLine(from, to, S.matrix, true);
 
     window.COORDS.push([from, to]);
 
@@ -171,7 +169,6 @@ async function main(imgSrc) {
     });
   }
   async function keepBatching(currentDrawing) {
-    const initialTime = new Date().getTime();
     while (c > 0 && currentDrawing === window.CURRENT_DRAWING) {
       await drawLinesInBatch(currentDrawing);
     }
@@ -219,7 +216,7 @@ function onChangeSettings() {
 
 document.querySelector("#inp").addEventListener("change", readFile);
 
-document.querySelector("#inputbutton").addEventListener("click", (evt) => {
+document.querySelector("#inputbutton").addEventListener("click", () => {
   document.querySelector("#inp").click();
 });
 
@@ -227,14 +224,14 @@ document.querySelectorAll("input[type='range']").forEach((input) => {
   input.addEventListener("change", debounce(onChangeSettings, 256));
 });
 
-document.querySelector("#download").addEventListener("click", (evt) => {
+document.querySelector("#download").addEventListener("click", () => {
   const link = document.createElement("a");
   link.download = "PINTR.png";
   link.href = document.querySelector("canvas#draw").toDataURL();
   link.click();
 });
 
-document.querySelector("#downloadsvg").addEventListener("click", (evt) => {
+document.querySelector("#downloadsvg").addEventListener("click", () => {
   const link = document.createElement("a");
   link.download = "PINTR.svg";
   const svgData = generatePolySvg(window.COORDS);
