@@ -5,7 +5,7 @@
     <link rel="shortcut icon" href="https://javier.xyz/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>PINTR - Create plotter-like line drawings</title>
+    <title>PINTR - Create plotter-like line drawings from your images</title>
     <meta property="og:title" content="PINTR" />
     <meta name="twitter:title" content="PINTR" />
 
@@ -13,11 +13,11 @@
 
     <meta
       name="description"
-      content="Turn your images into plotter-like line drawings."
+      content="Create plotter-like line drawings from your images."
     />
     <meta
       property="og:description"
-      content="Turn your images into plotter-like line drawings."
+      content="Create plotter-like line drawings from your images."
     />
 
     <link rel="canonical" href="https://javier.xyz/pintr/" />
@@ -30,10 +30,10 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
     
-  <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.28f62148.js"></script>
-  <link rel="modulepreload" href="https://javier.xyz/pintr/assets/vendor.d7bea3fb.js">
-  <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.51dd06db.css">
-</head>
+    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.0f531104.js"></script>
+    <link rel="modulepreload" href="https://javier.xyz/pintr/assets/vendor.d7bea3fb.js">
+    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.94432b38.css">
+  </head>
   <body>
     <div class="flex">
       <h1>PINTR</h1>
@@ -48,7 +48,7 @@
     <div class="input-container">
       <div class="input">
         <label for="lines">Lines</label>
-        <input type="range" id="lines" min="10" max="90" value="50" />
+        <input type="range" id="lines" min="3" max="90" value="50" />
       </div>
 
       <div class="input">
@@ -101,7 +101,7 @@
       <button id="downloadsvg">Download SVG</button>
     </div>
 
-    <div class="loading"><span>Face detection is working...</span></div>
+    <div class="loading"><span>Loading...</span></div>
 
     <script src="./weights/face-api.min.js"></script>
     
