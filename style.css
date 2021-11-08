@@ -39,6 +39,7 @@ button {
   display: block;
   background: #ecf0f1;
   white-space: nowrap;
+  color: #000;
 }
 button:hover {
   cursor: pointer;

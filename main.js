@@ -1,7 +1,4 @@
-import {
-  imageToRawData,
-  ctxToRGBMatrix,
-} from "canvas-image-utils";
+import { imageToRawData, ctxToRGBMatrix } from "canvas-image-utils";
 
 import { canvasDataToGrayscale } from "./lib/canvasDataToGrayscale.js";
 import { scanLine } from "./lib/scan.js";
