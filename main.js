@@ -2,7 +2,7 @@ import { imageToRawData, ctxToRGBMatrix } from "canvas-image-utils";
 
 import { canvasDataToGrayscale } from "./lib/canvasDataToGrayscale.js";
 import { scanLine } from "./lib/scan.js";
-import { generatePolySvg } from "./lib/svg.js";
+import { generateSvg } from "./lib/svg.js";
 
 import { intRnd, debounce } from "./lib/utils.js";
 import { faceDetector } from "./lib/face.js";
@@ -231,7 +231,7 @@ document.querySelector("#download").addEventListener("click", () => {
 document.querySelector("#downloadsvg").addEventListener("click", () => {
   const link = document.createElement("a");
   link.download = "PINTR.svg";
-  const svgData = generatePolySvg(window.COORDS);
+  const svgData = generateSvg(window.COORDS);
   const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
   const svgUrl = URL.createObjectURL(svgBlob);
   link.href = svgUrl;
