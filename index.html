@@ -39,8 +39,24 @@
       <input id="inp" type="file" />
     </div>
 
-    <canvas id="draw"></canvas><canvas id="src" style="display: none"></canvas>
-    <div id="srcimg"></div>
+    <div class="inline">
+      <div class="padding">
+        <div class="label">Draw</div>
+        <canvas id="draw"></canvas>
+      </div>
+
+      <!--       <div class="padding">
+        <div class="label">Draw SVG</div>
+        <div class="svg-container"></div>
+      </div> -->
+
+      <div class="srcimage-container padding">
+        <div class="label">Source</div>
+        <div id="srcimg"></div>
+      </div>
+    </div>
+
+    <canvas id="src" style="display: none"></canvas>
 
     <div class="input-container">
       <div class="input">
@@ -79,6 +95,18 @@
           min="0"
           max="1"
           value="0"
+        />
+      </div>
+
+      <div class="input">
+        <label for="strokeWidth">Stroke width</label>
+        <input
+          type="range"
+          id="strokeWidth"
+          step="0.5"
+          min="0.5"
+          max="3"
+          value="1"
         />
       </div>
     </div>

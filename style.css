@@ -1,3 +1,7 @@
+* {
+  position: relative;
+}
+
 body,
 button {
   font-family: poster-gothic-atf, sans-serif;
@@ -75,18 +79,39 @@ body {
   --sizeh: calc(1080px / 2);
 }
 
+.inline {
+  display: flex;
+}
+
+.padding {
+  padding: 16px;
+}
+
+.label {
+  display: block;
+  height: 23px;
+  line-height: 18px;
+  background: #0008;
+  color: #fff;
+  padding: 2px 8px;
+  font-size: 14px;
+  position: absolute;
+  z-index: 1;
+}
+
 canvas {
   background: #fff;
   height: var(--sizeh);
   width: var(--sizeh);
   display: inline-block;
   vertical-align: middle;
-  margin: 16px;
 }
 
-canvas#draw {
+canvas#draw,
+.svg-container {
   width: var(--sizeh);
   height: var(--sizeh);
+  background: #fff;
 }
 
 #src,
@@ -98,7 +123,6 @@ canvas#draw {
   height: var(--sizeh);
   width: var(--sizeh);
   display: none;
-  margin: 16px;
 }
 
 canvas,
@@ -207,8 +231,16 @@ input[type="range"].toggle::-moz-range-thumb {
   text-transform: uppercase;
 }
 
-@media screen and (max-width: 1200px) {
-  #srcimg {
-    display: none;
+/*540 + 540 + 16 * 4*/
+@media screen and (max-width: 1144px) {
+  .srcimage-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .srcimage-container #srcimg {
+    width: max(calc(100vw - 604px), 92px);
+    height: max(calc(100vw - 604px), 92px);
   }
 }

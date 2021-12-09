@@ -8,6 +8,7 @@ import { intRnd, debounce } from "./lib/utils.js";
 import { faceDetector } from "./lib/face.js";
 
 import Draw from "./lib/draw.js";
+// import DrawLiveSvg from "./lib/live-svg.js";
 
 window.IMAGE_SRC = "./test.jpg";
 window.CURRENT_DRAWING = new Date().getTime();
@@ -23,6 +24,7 @@ const ORIGINAL_CONFIG = {
   addColor: "#000",
   substractionColor: "rgba(255,255,255,30%)",
   precisionRange: [16, 28],
+  strokeWidth: 1,
 };
 const CONFIG = JSON.parse(JSON.stringify(ORIGINAL_CONFIG));
 
@@ -32,17 +34,21 @@ drawEl.width = DRAW_SIZE;
 drawEl.height = DRAW_SIZE;
 const ctx = drawEl.getContext("2d");
 const draw = Draw(ctx);
+// const liveSvg = DrawLiveSvg(document.querySelector(".svg-container"));
 
 const S = {
   matrix: [],
 };
 
 async function main(imgSrc) {
+  const startTime = new Date().getTime();
+
   window.CURRENT_DRAWING = new Date().getTime();
   window.COORDS = [];
 
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, DRAW_SIZE, DRAW_SIZE);
+  // liveSvg.clear()
 
   document.querySelector("#srcimg").style.backgroundImage = `url("${imgSrc}")`;
 
@@ -131,6 +137,8 @@ async function main(imgSrc) {
 
     window.COORDS.push([from, to]);
 
+    // liveSvg.lineBuffer(from, to)
+
     draw.lineBuffer(from, to, {
       color: `#000`,
     });
@@ -147,20 +155,31 @@ async function main(imgSrc) {
   function drawLinesInBatch(currentDrawing) {
     return new Promise((resolve) => {
       const time = new Date().getTime();
-      while (new Date().getTime() < time + 15 && c-- > 0) {
+      while (new Date().getTime() < time + 16 && c-- > 0) {
         if (currentDrawing !== window.CURRENT_DRAWING) return;
 
         if (c % CONFIG.updateSampleRate === 0) {
-          draw.stroke({ color: CONFIG.addColor });
-          drawSrc.stroke({ color: CONFIG.substractionColor, width: 1.5 });
+          // liveSvg.stroke();
+          draw.stroke({
+            color: CONFIG.addColor,
+            width: CONFIG.strokeWidth * 1,
+          });
+          drawSrc.stroke({
+            color: CONFIG.substractionColor,
+            width: CONFIG.strokeWidth * 1.5,
+          });
 
           S.matrix = ctxToRGBMatrix(ctxSrc);
         }
         drawSequenceLine();
       }
 
-      draw.stroke({ color: CONFIG.addColor });
-      drawSrc.stroke({ color: CONFIG.substractionColor, width: 1.5 });
+      // liveSvg.stroke()
+      draw.stroke({ color: CONFIG.addColor, width: CONFIG.strokeWidth * 1 });
+      drawSrc.stroke({
+        color: CONFIG.substractionColor,
+        width: CONFIG.strokeWidth * 1.5,
+      });
 
       window.requestAnimationFrame(resolve);
     });
@@ -169,6 +188,10 @@ async function main(imgSrc) {
     while (c > 0 && currentDrawing === window.CURRENT_DRAWING) {
       await drawLinesInBatch(currentDrawing);
     }
+    console.log(
+      "Lines per second:",
+      (CONFIG.baseLineNumber / (new Date().getTime() - startTime)) * 1000
+    );
   }
   keepBatching(window.CURRENT_DRAWING);
 }
@@ -197,12 +220,18 @@ function onChangeSettings() {
   const definition = document.querySelector(
     "input[type='range']#definition"
   ).value;
+  const strokeWidth = document.querySelector(
+    "input[type='range']#strokeWidth"
+  ).value;
+
+  console.warn(strokeWidth);
 
   CONFIG.baseLineNumber = (ORIGINAL_CONFIG.baseLineNumber / 50) * lines;
   CONFIG.substractionColor = `rgba(255, 255, 255, ${100 - contrast}%)`;
   CONFIG.precisionRange = [definition, definition * 2];
   CONFIG.singleLine = Number(singleline) ? true : false;
   CONFIG.faceApi = Number(faceApi) ? true : false;
+  CONFIG.strokeWidth = Number(strokeWidth);
 
   if (CONFIG.faceApi) {
     document.querySelector(".loading").style.display = "block";
@@ -212,11 +241,9 @@ function onChangeSettings() {
 }
 
 document.querySelector("#inp").addEventListener("change", readFile);
-
 document.querySelector("#inputbutton").addEventListener("click", () => {
   document.querySelector("#inp").click();
 });
-
 document.querySelectorAll("input[type='range']").forEach((input) => {
   input.addEventListener("change", debounce(onChangeSettings, 256));
 });

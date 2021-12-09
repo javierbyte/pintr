@@ -11,9 +11,9 @@
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
-    "eslint": "^8.3.0",
+    "eslint": "^8.4.1",
     "gh-pages": "^3.2.3",
-    "vite": "^2.6.14"
+    "vite": "^2.7.1"
   },
   "dependencies": {
     "canvas-image-utils": "^2.0.2"
