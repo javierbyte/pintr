@@ -45,11 +45,6 @@
         <canvas id="draw"></canvas>
       </div>
 
-      <!--       <div class="padding">
-        <div class="label">Draw SVG</div>
-        <div class="svg-container"></div>
-      </div> -->
-
       <div class="srcimage-container padding">
         <div class="label">Source</div>
         <div id="srcimg"></div>
@@ -61,7 +56,7 @@
     <div class="input-container">
       <div class="input">
         <label for="lines">Lines</label>
-        <input type="range" id="lines" min="3" max="90" value="50" />
+        <input type="range" id="lines" min="3" max="100" value="50" />
       </div>
 
       <div class="input">
@@ -103,18 +98,18 @@
         <input
           type="range"
           id="strokeWidth"
-          step="0.5"
+          step="0.25"
           min="0.5"
           max="3"
-          value="1"
+          value="1.25"
         />
       </div>
     </div>
 
     <div class="instructions">
-      <strong>1.</strong> Select an image, images with a face, white or light
-      backgrounds and good contrast work better. <strong>2.</strong> Play with
-      the controls. <strong>3.</strong> Download. Your photos never leave your
+      <strong>1.</strong>Select an image, images with a face, white or light
+      backgrounds and good contrast work better. <strong>2</strong> Play with
+      the controls. <strong>3.</strong>Download. Your photos never leave your
       computer. More information and source available on
       <a href="https://github.com/javierbyte/pintr">Github</a>. Created by
       <a href="https://twitter.com/javierbyte">Javierbyte</a>.
@@ -125,11 +120,37 @@
       <button id="downloadsvg">Download SVG</button>
     </div>
 
+    <div class="experimental--smooth-svg">
+      <div class="instructions">Other Exports:</div>
+
+      <div class="input-container">
+        <div class="input">
+          <label for="makeSmoothSvg">Smooth SVG</label>
+          <input
+            type="range"
+            class="toggle"
+            id="makeSmoothSvg"
+            min="0"
+            max="1"
+            value="0"
+          />
+        </div>
+      </div>
+
+      <div class="experimental--smoth-svg--container">
+        <div class="padding">
+          <div class="label">Smooth SVG</div>
+          <div class="smooth-svg-container"></div>
+        </div>
+
+        <button id="downloadSmoothSvg">Download SVG</button>
+      </div>
+    </div>
+
     <div class="loading"><span>Loading...</span></div>
 
     <script src="./weights/face-api.min.js"></script>
     <script type="module" src="/main.js"></script>
-    <link rel="stylesheet" href="https://use.typekit.net/hty6cym.css" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
