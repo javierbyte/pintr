@@ -17,8 +17,7 @@ button {
   letter-spacing: -1px;
   font-weight: 400;
   font-style: normal;
-  font-size: 24.5px;
-  text-rendering: optimizeLegibility;
+  font-size: 25px;
 }
 
 h1 {
@@ -57,8 +56,7 @@ button {
   background: #ecf0f1;
   white-space: nowrap;
   color: #000;
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 30.4px;
   letter-spacing: -1.2px;
 }
 button:hover {
@@ -220,7 +218,7 @@ input[type='range'].toggle::-moz-range-thumb {
 .instructions {
   margin: 16px;
   text-transform: uppercase;
-  line-height: 1.5;
+  line-height: 1.4;
   color: #7f8c8d;
 }
 
