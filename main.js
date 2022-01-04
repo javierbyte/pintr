@@ -95,7 +95,10 @@ async function main(imgSrc) {
   let lP = [Math.floor(DATA_WIDTH / 2), Math.floor(DATA_HEIGHT / 2)];
 
   while (S.matrix[lP[0]][lP[1]] === 255 * 3) {
-    lP = [Math.floor(Math.random() * DATA_WIDTH), Math.floor(Math.random() * DATA_HEIGHT)];
+    lP = [
+      Math.floor(Math.random() * DATA_WIDTH),
+      Math.floor(Math.random() * DATA_HEIGHT)
+    ];
   }
 
   function drawSequenceLine() {
@@ -118,7 +121,10 @@ async function main(imgSrc) {
     let to;
     let light = 255;
     while (toExplore--) {
-      let tmpTo = [Math.floor(Math.random() * DATA_WIDTH), Math.floor(Math.random() * DATA_HEIGHT)];
+      let tmpTo = [
+        Math.floor(Math.random() * DATA_WIDTH),
+        Math.floor(Math.random() * DATA_HEIGHT)
+      ];
 
       const tmpLight = scanLine(from, tmpTo, S.matrix);
 
@@ -189,7 +195,8 @@ async function main(imgSrc) {
     if (CONFIG.makeSmoothSvg) {
       const smoothSvgData = generateSmoothSvg(window.COORDS, {
         ...CONFIG,
-        size: window.CURRENT_IMAGE_SIZE
+        size: window.CURRENT_IMAGE_SIZE,
+        smoothing: document.querySelector('#inputSmoothness').value / 100
       });
       document.querySelector('.smooth-svg-container').innerHTML = smoothSvgData;
     }
@@ -218,13 +225,21 @@ function readFile() {
 // UI
 function onChangeSettings() {
   const lines = document.querySelector("input[type='range']#lines").value;
-  const singleline = document.querySelector("input[type='range']#singleline").value;
+  const singleline = document.querySelector(
+    "input[type='range']#singleline"
+  ).value;
   const faceApi = document.querySelector("input[type='range']#faceapi").value;
   const contrast = document.querySelector("input[type='range']#contrast").value;
-  const definition = document.querySelector("input[type='range']#definition").value;
-  const strokeWidth = document.querySelector("input[type='range']#strokeWidth").value;
+  const definition = document.querySelector(
+    "input[type='range']#definition"
+  ).value;
+  const strokeWidth = document.querySelector(
+    "input[type='range']#strokeWidth"
+  ).value;
 
-  const makeSmoothSvg = document.querySelector("input[type='range']#makeSmoothSvg").value;
+  const makeSmoothSvg = document.querySelector(
+    "input[type='range']#makeSmoothSvg"
+  ).value;
 
   CONFIG.baseLineNumber = (ORIGINAL_CONFIG.baseLineNumber / 50) * lines;
   CONFIG.substractionColor = `rgba(255, 255, 255, ${100 - contrast}%)`;
@@ -232,15 +247,19 @@ function onChangeSettings() {
   CONFIG.singleLine = Number(singleline) ? true : false;
   CONFIG.faceApi = Number(faceApi) ? true : false;
   CONFIG.strokeWidth = Number(strokeWidth);
-  CONFIG.makeSmoothSvg = CONFIG.singleLine && (Number(makeSmoothSvg) ? true : false);
+  CONFIG.makeSmoothSvg =
+    CONFIG.singleLine && (Number(makeSmoothSvg) ? true : false);
 
   if (CONFIG.faceApi) {
     document.querySelector('.loading').style.display = 'block';
   }
 
-  document.querySelector('.experimental--smoth-svg--container').style.display = CONFIG.makeSmoothSvg
-    ? 'block'
-    : 'none';
+  document.querySelector('.experimental--smoth-svg--container').style.display =
+    CONFIG.makeSmoothSvg ? 'block' : 'none';
+
+  document.querySelector(
+    '.experimental--smoth-svg--container--warning'
+  ).style.display = CONFIG.singleLine ? 'none' : 'block';
 
   main(window.IMAGE_SRC);
 }
@@ -251,7 +270,23 @@ document.querySelector('#inputbutton').addEventListener('click', () => {
   document.querySelector('#inp').click();
 });
 document.querySelectorAll("input[type='range']").forEach((input) => {
-  input.addEventListener('change', debounce(onChangeSettings, 256));
+  // TODO handle this better
+  if (input.id === 'inputSmoothness') {
+    input.addEventListener(
+      'change',
+      debounce(() => {
+        const smoothSvgData = generateSmoothSvg(window.COORDS, {
+          ...CONFIG,
+          size: window.CURRENT_IMAGE_SIZE,
+          smoothing: document.querySelector('#inputSmoothness').value / 100
+        });
+        document.querySelector('.smooth-svg-container').innerHTML =
+          smoothSvgData;
+      }, 128)
+    );
+  } else {
+    input.addEventListener('change', debounce(onChangeSettings, 256));
+  }
 });
 
 document.querySelector('#download').addEventListener('click', () => {
@@ -264,7 +299,10 @@ document.querySelector('#download').addEventListener('click', () => {
 document.querySelector('#downloadsvg').addEventListener('click', () => {
   const link = document.createElement('a');
   link.download = 'PINTR.svg';
-  const svgData = generateSvg(window.COORDS, { ...CONFIG, size: window.CURRENT_IMAGE_SIZE });
+  const svgData = generateSvg(window.COORDS, {
+    ...CONFIG,
+    size: window.CURRENT_IMAGE_SIZE
+  });
   // const svgData = generateSmoothSvg(window.COORDS, CONFIG);
 
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
@@ -278,7 +316,8 @@ document.querySelector('#downloadSmoothSvg').addEventListener('click', () => {
   link.download = 'PINTR.svg';
   const smoothSvgData = generateSmoothSvg(window.COORDS, {
     CONFIG,
-    size: window.CURRENT_IMAGE_SIZE
+    size: window.CURRENT_IMAGE_SIZE,
+    smoothing: document.querySelector('#inputSmoothness').value / 100
   });
   const svgBlob = new Blob([smoothSvgData], {
     type: 'image/svg+xml;charset=utf-8'

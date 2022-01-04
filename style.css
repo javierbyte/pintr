@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Brutalita';
-  src: url('/Brutalita-Regular.woff2') format('woff2');
+  src: url('https://brutalita.com/Brutalita-Regular.woff2') format('woff2');
 }
 
 body {
@@ -46,9 +46,9 @@ a:hover {
 }
 
 button {
+  text-transform: uppercase;
   appearance: none;
   -webkit-appearance: none;
-  text-transform: uppercase;
   margin: 8px 16px;
   padding: 8px 16px;
   border: 3px solid #000;
@@ -167,7 +167,6 @@ canvas#src {
   display: flex;
   align-items: center;
   margin: 8px 16px;
-  text-transform: uppercase;
 }
 
 input[type='range'] {
@@ -217,7 +216,6 @@ input[type='range'].toggle::-moz-range-thumb {
 
 .instructions {
   margin: 16px;
-  text-transform: uppercase;
   line-height: 1.4;
   color: #7f8c8d;
 }
@@ -242,7 +240,6 @@ input[type='range'].toggle::-moz-range-thumb {
   text-align: center;
   background: #ecf0f1aa;
   color: #000;
-  text-transform: uppercase;
 }
 
 /*540 + 540 + 16 * 4*/
