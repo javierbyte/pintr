@@ -1,5 +1,7 @@
 import { imageToRawData, ctxToRGBGrayscaleMatrix } from 'canvas-image-utils';
 
+import { pinterCreator } from './lib/PINTR.js';
+
 import { canvasDataToGrayscale } from './lib/canvasDataToGrayscale.js';
 import { scanLine } from './lib/scan.js';
 import { generateSvg } from './lib/svg.js';
@@ -22,11 +24,11 @@ const ORIGINAL_CONFIG = {
   addColor: '#000',
   baseLineNumber: 3600,
   faceApi: false,
-  precisionRange: (2)[('16', 32)],
+  precisionRange: [16, 32],
   singleLine: true,
   strokeWidth: 1.25,
   substractionColor: 'rgba(255, 255, 255, 30%)',
-  updateSampleRate: 100
+  updateSampleRate: 90,
 };
 const CONFIG = JSON.parse(JSON.stringify(ORIGINAL_CONFIG));
 
@@ -39,7 +41,7 @@ const draw = Draw(ctx);
 // const liveSvg = DrawLiveSvg(document.querySelector(".svg-container"));
 
 const S = {
-  matrix: []
+  matrix: [],
 };
 
 async function main(imgSrc) {
@@ -57,8 +59,10 @@ async function main(imgSrc) {
   const data = await imageToRawData(imgSrc, {
     size: DRAW_SIZE,
     canvas: canvasSrcEl,
-    crop: false
+    crop: false,
   });
+
+  // const PINTR = pinterCreator(data);
 
   const DATA_WIDTH = data.width;
   const DATA_HEIGHT = data.height;
@@ -89,6 +93,7 @@ async function main(imgSrc) {
   const ctxSrc = data.ctx;
 
   S.matrix = ctxToRGBGrayscaleMatrix(ctxSrc);
+  // S.arr = ctxToRawUint8Array(ctxSrc);
 
   const drawSrc = Draw(data.ctx);
 
@@ -97,9 +102,16 @@ async function main(imgSrc) {
   while (S.matrix[lP[0]][lP[1]] === 255 * 3) {
     lP = [
       Math.floor(Math.random() * DATA_WIDTH),
-      Math.floor(Math.random() * DATA_HEIGHT)
+      Math.floor(Math.random() * DATA_HEIGHT),
     ];
   }
+
+  // while (S.arr[lP[0] * DATA_WIDTH + lP[1]] === 255 * 3) {
+  //   lP = [
+  //     Math.floor(Math.random() * DATA_WIDTH),
+  //     Math.floor(Math.random() * DATA_HEIGHT),
+  //   ];
+  // }
 
   function drawSequenceLine() {
     let from = lP;
@@ -108,12 +120,19 @@ async function main(imgSrc) {
     while (toFrom--) {
       let tmpFrom = [
         Math.floor(Math.random() * DATA_WIDTH),
-        Math.floor(Math.random() * DATA_HEIGHT)
+        Math.floor(Math.random() * DATA_HEIGHT),
       ];
 
       if (S.matrix[from[0]][from[1]] > S.matrix[tmpFrom[0]][tmpFrom[1]]) {
         from = tmpFrom;
       }
+
+      // if (
+      //   S.arr[from[0] * DATA_WIDTH + from[1]] >
+      //   S.arr[tmpFrom[0] * DATA_WIDTH + tmpFrom[1]]
+      // ) {
+      //   from = tmpFrom;
+      // }
     }
 
     let toExplore = intRnd(...CONFIG.precisionRange);
@@ -123,10 +142,11 @@ async function main(imgSrc) {
     while (toExplore--) {
       let tmpTo = [
         Math.floor(Math.random() * DATA_WIDTH),
-        Math.floor(Math.random() * DATA_HEIGHT)
+        Math.floor(Math.random() * DATA_HEIGHT),
       ];
 
       const tmpLight = scanLine(from, tmpTo, S.matrix);
+      // const tmpLight = scanLineUint8(from, tmpTo, S.arr, DATA_WIDTH);
 
       if (tmpLight <= light) {
         light = tmpLight;
@@ -135,24 +155,25 @@ async function main(imgSrc) {
     }
 
     light = scanLine(from, to, S.matrix);
+    // light = scanLineUint8(from, to, S.arr, DATA_WIDTH);
 
     window.COORDS.push([from, to]);
 
     // liveSvg.lineBuffer(from, to);
 
     draw.lineBuffer(from, to, {
-      color: `#000`
+      color: `#000`,
     });
     drawSrc.lineBuffer(from, to, {
-      color: CONFIG.substractionColor
+      color: CONFIG.substractionColor,
     });
 
     lP = to;
   }
 
   let initialC = Math.floor((CONFIG.baseLineNumber / averageLightness) * 128);
-
   let c = initialC;
+
   function drawLinesInBatch(currentDrawing) {
     return new Promise((resolve) => {
       const time = new Date().getTime();
@@ -167,10 +188,11 @@ async function main(imgSrc) {
           // });
           drawSrc.stroke({
             color: CONFIG.substractionColor,
-            width: CONFIG.strokeWidth * 1.5
+            width: CONFIG.strokeWidth * 1.5,
           });
 
           S.matrix = ctxToRGBGrayscaleMatrix(ctxSrc);
+          // S.arr = ctxToRawUint8Array(ctxSrc);
         }
         drawSequenceLine();
       }
@@ -196,7 +218,7 @@ async function main(imgSrc) {
       const smoothSvgData = generateSmoothSvg(window.COORDS, {
         ...CONFIG,
         size: window.CURRENT_IMAGE_SIZE,
-        smoothing: document.querySelector('#inputSmoothness').value / 100
+        smoothing: document.querySelector('#inputSmoothness').value / 100,
       });
       document.querySelector('.smooth-svg-container').innerHTML = smoothSvgData;
     }
@@ -243,7 +265,7 @@ function onChangeSettings() {
 
   CONFIG.baseLineNumber = (ORIGINAL_CONFIG.baseLineNumber / 50) * lines;
   CONFIG.substractionColor = `rgba(255, 255, 255, ${100 - contrast}%)`;
-  CONFIG.precisionRange = [definition, definition * 2];
+  CONFIG.precisionRange = [Number(definition), Number(definition * 2)];
   CONFIG.singleLine = Number(singleline) ? true : false;
   CONFIG.faceApi = Number(faceApi) ? true : false;
   CONFIG.strokeWidth = Number(strokeWidth);
@@ -278,7 +300,7 @@ document.querySelectorAll("input[type='range']").forEach((input) => {
         const smoothSvgData = generateSmoothSvg(window.COORDS, {
           ...CONFIG,
           size: window.CURRENT_IMAGE_SIZE,
-          smoothing: document.querySelector('#inputSmoothness').value / 100
+          smoothing: document.querySelector('#inputSmoothness').value / 100,
         });
         document.querySelector('.smooth-svg-container').innerHTML =
           smoothSvgData;
@@ -301,7 +323,7 @@ document.querySelector('#downloadsvg').addEventListener('click', () => {
   link.download = 'PINTR.svg';
   const svgData = generateSvg(window.COORDS, {
     ...CONFIG,
-    size: window.CURRENT_IMAGE_SIZE
+    size: window.CURRENT_IMAGE_SIZE,
   });
   // const svgData = generateSmoothSvg(window.COORDS, CONFIG);
 
@@ -317,10 +339,10 @@ document.querySelector('#downloadSmoothSvg').addEventListener('click', () => {
   const smoothSvgData = generateSmoothSvg(window.COORDS, {
     CONFIG,
     size: window.CURRENT_IMAGE_SIZE,
-    smoothing: document.querySelector('#inputSmoothness').value / 100
+    smoothing: document.querySelector('#inputSmoothness').value / 100,
   });
   const svgBlob = new Blob([smoothSvgData], {
-    type: 'image/svg+xml;charset=utf-8'
+    type: 'image/svg+xml;charset=utf-8',
   });
   const svgUrl = URL.createObjectURL(svgBlob);
   link.href = svgUrl;
