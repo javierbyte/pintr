@@ -29,9 +29,8 @@
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     
-    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.f6fc52e2.js"></script>
-    <link rel="modulepreload" href="https://javier.xyz/pintr/assets/vendor.2ac2f24a.js">
-    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.f21d9f90.css">
+    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.6da82694.js"></script>
+    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.0126c281.css">
   </head>
   <body>
     <div class="flex">
@@ -48,7 +47,7 @@
 
       <div class="srcimage-container padding">
         <div class="label">Source</div>
-        <div id="srcimg"></div>
+        <div id="srcImg"></div>
       </div>
     </div>
 
@@ -57,37 +56,60 @@
     <div class="input-container">
       <div class="input">
         <label for="lines">Lines</label>
-        <input type="range" id="lines" min="3" max="100" value="50" />
+        <input
+          type="range"
+          data-start-drawing
+          id="lines"
+          min="3"
+          max="120"
+          value="50"
+        />
       </div>
 
       <div class="input">
         <label for="contrast">Contrast</label>
-        <input type="range" id="contrast" min="20" max="90" value="70" />
+        <input
+          type="range"
+          data-start-drawing
+          id="contrast"
+          min="20"
+          max="90"
+          value="70"
+        />
       </div>
 
       <div class="input">
         <label for="definition">Definition</label>
-        <input type="range" id="definition" min="4" max="24" value="16" />
+        <input
+          type="range"
+          data-start-drawing
+          id="definition"
+          min="4"
+          max="100"
+          value="18"
+        />
       </div>
 
       <div class="input">
-        <label for="singleline">Single Line</label>
+        <label for="singleLine">Single Line</label>
         <input
           type="range"
+          data-start-drawing
           class="toggle"
-          id="singleline"
+          id="singleLine"
           min="0"
           max="1"
           value="1"
         />
       </div>
 
-      <div class="input">
-        <label for="faceapi">Face Detection</label>
+      <div class="input" style="display: none">
+        <label for="faceApi">Face Detection</label>
         <input
           type="range"
+          data-start-drawing
           class="toggle"
-          id="faceapi"
+          id="faceApi"
           min="0"
           max="1"
           value="0"
@@ -98,6 +120,7 @@
         <label for="strokeWidth">Stroke width</label>
         <input
           type="range"
+          data-start-drawing
           id="strokeWidth"
           step="0.25"
           min="0.5"
@@ -114,11 +137,12 @@
       computer. More information and source available on
       <a href="https://github.com/javierbyte/pintr">Github</a>. Created by
       <a href="https://twitter.com/javierbyte">Javierbyte</a>.
+      <a href="https://www.fxhash.xyz/generative/slug/pintr">Buy the NFT!</a>
     </div>
 
     <div class="flex">
       <button id="download">Download PNG</button>
-      <button id="downloadsvg">Download SVG</button>
+      <button id="downloadSvg">Download SVG</button>
     </div>
 
     <div class="experimental--smooth-svg">
@@ -128,6 +152,7 @@
         <div class="input">
           <label for="makeSmoothSvg">Smooth SVG</label>
           <input
+            data-start-drawing
             type="range"
             class="toggle"
             id="makeSmoothSvg"
@@ -148,7 +173,7 @@
       <div class="experimental--smoth-svg--container">
         <div class="input-container">
           <div class="input">
-            <label for="singleline">Smoothness</label>
+            <label for="inputSmoothness">Smoothness</label>
             <input
               type="range"
               id="inputSmoothness"
