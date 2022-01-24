@@ -29,14 +29,15 @@
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     
-    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.6da82694.js"></script>
-    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.0126c281.css">
+    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.b45881ee.js"></script>
+    <link rel="modulepreload" href="https://javier.xyz/pintr/assets/vendor.2ac2f24a.js">
+    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.fcc6162a.css">
   </head>
   <body>
     <div class="flex">
       <h1>PINTR</h1>
-      <button id="inputbutton" type="file">New image</button>
-      <input id="inp" type="file" />
+      <button id="inputImageButton" type="file">New image</button>
+      <input id="inputImageFile" type="file" />
     </div>
 
     <div class="inline">
@@ -100,19 +101,6 @@
           min="0"
           max="1"
           value="1"
-        />
-      </div>
-
-      <div class="input" style="display: none">
-        <label for="faceApi">Face Detection</label>
-        <input
-          type="range"
-          data-start-drawing
-          class="toggle"
-          id="faceApi"
-          min="0"
-          max="1"
-          value="0"
         />
       </div>
 
@@ -194,7 +182,7 @@
 
     <div class="loading"><span>Loading...</span></div>
 
-    <script src="./weights/face-api.min.js"></script>
+    <!-- <script src="./weights/face-api.min.js"></script> -->
     
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
