@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Brutalita';
-  src: url('https://brutalita.com/Brutalita-Regular.woff2') format('woff2');
+  src: url('./public/Brutalita-Regular.woff2') format('woff2');
 }
 
 body {
@@ -123,14 +123,14 @@ canvas {
 canvas,
 .svg-container,
 .smooth-svg-container,
-#srcimg {
+#srcImg {
   width: var(--sizew);
   height: var(--sizeh);
   background: #fff;
 }
 
 #src,
-#srcimg {
+#srcImg {
   background-size: cover;
   background-position: center;
   display: inline-block;
@@ -140,14 +140,14 @@ canvas,
 
 canvas,
 #src,
-#srcimg,
+#srcImg,
 .smooth-svg-container {
   max-width: calc(100vw - 32px);
   max-height: calc(100vw - 32px);
 }
 
 #src,
-#srcimg {
+#srcImg {
   display: inline-block;
 }
 canvas#src {
@@ -250,7 +250,7 @@ input[type='range'].toggle::-moz-range-thumb {
     right: 0;
   }
 
-  .srcimage-container #srcimg {
+  .srcimage-container #srcImg {
     width: max(calc(100vw - 604px), 92px);
     height: max(calc(100vw - 604px), 92px);
   }

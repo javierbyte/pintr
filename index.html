@@ -33,8 +33,8 @@
   <body>
     <div class="flex">
       <h1>PINTR</h1>
-      <button id="inputbutton" type="file">New image</button>
-      <input id="inp" type="file" />
+      <button id="inputImageButton" type="file">New image</button>
+      <input id="inputImageFile" type="file" />
     </div>
 
     <div class="inline">
@@ -45,7 +45,7 @@
 
       <div class="srcimage-container padding">
         <div class="label">Source</div>
-        <div id="srcimg"></div>
+        <div id="srcImg"></div>
       </div>
     </div>
 
@@ -54,25 +54,47 @@
     <div class="input-container">
       <div class="input">
         <label for="lines">Lines</label>
-        <input type="range" id="lines" min="3" max="120" value="50" />
+        <input
+          type="range"
+          data-start-drawing
+          id="lines"
+          min="3"
+          max="120"
+          value="50"
+        />
       </div>
 
       <div class="input">
         <label for="contrast">Contrast</label>
-        <input type="range" id="contrast" min="20" max="90" value="70" />
+        <input
+          type="range"
+          data-start-drawing
+          id="contrast"
+          min="20"
+          max="90"
+          value="70"
+        />
       </div>
 
       <div class="input">
         <label for="definition">Definition</label>
-        <input type="range" id="definition" min="4" max="100" value="18" />
+        <input
+          type="range"
+          data-start-drawing
+          id="definition"
+          min="4"
+          max="100"
+          value="18"
+        />
       </div>
 
       <div class="input">
-        <label for="singleline">Single Line</label>
+        <label for="singleLine">Single Line</label>
         <input
           type="range"
+          data-start-drawing
           class="toggle"
-          id="singleline"
+          id="singleLine"
           min="0"
           max="1"
           value="1"
@@ -80,21 +102,10 @@
       </div>
 
       <div class="input">
-        <label for="faceapi">Face Detection</label>
-        <input
-          type="range"
-          class="toggle"
-          id="faceapi"
-          min="0"
-          max="1"
-          value="0"
-        />
-      </div>
-
-      <div class="input">
         <label for="strokeWidth">Stroke width</label>
         <input
           type="range"
+          data-start-drawing
           id="strokeWidth"
           step="0.25"
           min="0.5"
@@ -111,11 +122,12 @@
       computer. More information and source available on
       <a href="https://github.com/javierbyte/pintr">Github</a>. Created by
       <a href="https://twitter.com/javierbyte">Javierbyte</a>.
+      <a href="https://www.fxhash.xyz/generative/slug/pintr">Buy the NFT!</a>
     </div>
 
     <div class="flex">
       <button id="download">Download PNG</button>
-      <button id="downloadsvg">Download SVG</button>
+      <button id="downloadSvg">Download SVG</button>
     </div>
 
     <div class="experimental--smooth-svg">
@@ -125,6 +137,7 @@
         <div class="input">
           <label for="makeSmoothSvg">Smooth SVG</label>
           <input
+            data-start-drawing
             type="range"
             class="toggle"
             id="makeSmoothSvg"
@@ -145,7 +158,7 @@
       <div class="experimental--smoth-svg--container">
         <div class="input-container">
           <div class="input">
-            <label for="singleline">Smoothness</label>
+            <label for="inputSmoothness">Smoothness</label>
             <input
               type="range"
               id="inputSmoothness"
@@ -166,7 +179,7 @@
 
     <div class="loading"><span>Loading...</span></div>
 
-    <script src="./weights/face-api.min.js"></script>
+    <!-- <script src="./weights/face-api.min.js"></script> -->
     <script type="module" src="/main.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->

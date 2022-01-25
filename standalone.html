@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href="https://javier.xyz/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>PINTR - Create plotter-like line drawings from your images</title>
+    <meta property="og:title" content="PINTR" />
+    <meta name="twitter:title" content="PINTR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta
+      name="description"
+      content="Create plotter-like line drawings from your images."
+    />
+    <meta
+      property="og:description"
+      content="Create plotter-like line drawings from your images."
+    />
+
+    <link rel="canonical" href="https://javier.xyz/pintr/" />
+    <meta property="og:url" content="https://javier.xyz/pintr/" />
+
+    <meta property="og:og:image:width" content="800" />
+    <meta property="og:image:height" content="450" />
+    <meta property="og:image" content="https://javier.xyz/pintr/pintr.jpg" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        height: 100vmin;
+        width: 100vmin;
+        display: block;
+        padding: calc(50vh - 50vmin) calc(50vw - 50vmin);
+      }
+
+      .main {
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <canvas id="draw"></canvas>
+    </div>
+    <script type="module" src="/standalone.js"></script>
+  </body>
+</html>
