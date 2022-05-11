@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Brutalita';
-  src: url('./Brutalita-Regular.woff2') format('woff2');
+  src: url('/Brutalita-Regular.woff2') format('woff2');
 }
 
 body {
@@ -12,6 +12,7 @@ body {
 }
 
 body,
+html,
 button {
   font-family: Brutalita, Courier, monospace, sans-serif;
   letter-spacing: -1px;
@@ -22,7 +23,7 @@ button {
 
 h1 {
   font-weight: 400;
-  font-size: 40px;
+  font-size: 2rem;
   margin: 0;
   padding: 0;
   line-height: 50px;
@@ -56,7 +57,7 @@ button {
   background: #ecf0f1;
   white-space: nowrap;
   color: #000;
-  font-size: 30.4px;
+  font-size: 1.25rem;
   letter-spacing: -1.2px;
 }
 button:hover {
@@ -67,10 +68,6 @@ button:hover {
 
 input[type='file'] {
   display: none;
-}
-
-label {
-  font-size: 24px;
 }
 
 html {
@@ -138,16 +135,24 @@ canvas,
   display: none;
 }
 
-canvas,
-#src,
-#srcImg,
-.smooth-svg-container {
+#srcImg {
   max-width: calc(100vw - 32px);
   max-height: calc(100vw - 32px);
 }
 
+canvas,
+#src,
+.smooth-svg-container {
+  max-width: calc(100vw - 32px);
+  height: auto;
+}
+
 #src,
 #srcImg {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top;
+  background-color: transparent;
   display: inline-block;
 }
 canvas#src {
@@ -227,7 +232,7 @@ input[type='range'].toggle::-moz-range-thumb {
 .loading {
   padding: 10vmin;
   cursor: default;
-  font-size: 48px;
+  font-size: 1.5rem;
   letter-spacing: -1px;
   position: fixed;
   top: 0;
@@ -244,6 +249,10 @@ input[type='range'].toggle::-moz-range-thumb {
 
 /*540 + 540 + 16 * 4*/
 @media screen and (max-width: 1144px) {
+  html,
+  body {
+    font-size: 20px;
+  }
   .srcimage-container {
     position: absolute;
     bottom: 0;
@@ -252,7 +261,6 @@ input[type='range'].toggle::-moz-range-thumb {
 
   .srcimage-container #srcImg {
     width: max(calc(100vw - 604px), 92px);
-    height: max(calc(100vw - 604px), 92px);
   }
 }
 
