@@ -29,8 +29,8 @@
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     
-    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.84e8b2a9.js"></script>
-    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.90a4319c.css">
+    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.0c57e9cf.js"></script>
+    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.ab7e8e0b.css">
   </head>
   <body>
     <div class="app">
@@ -56,13 +56,13 @@
 
       <div class="input-container">
         <div class="input">
-          <label for="lines">Lines</label>
+          <label for="density">Density</label>
           <input
             type="range"
             data-start-drawing
-            id="lines"
-            min="3"
-            max="120"
+            id="density"
+            min="0"
+            max="100"
             value="50"
           />
         </div>
@@ -73,9 +73,9 @@
             type="range"
             data-start-drawing
             id="contrast"
-            min="20"
-            max="90"
-            value="70"
+            min="0"
+            max="100"
+            value="50"
           />
         </div>
 
@@ -85,9 +85,9 @@
             type="range"
             data-start-drawing
             id="definition"
-            min="4"
+            min="0"
             max="100"
-            value="18"
+            value="50"
           />
         </div>
 
@@ -113,7 +113,7 @@
             step="0.25"
             min="0.5"
             max="3"
-            value="1.25"
+            value="1.5"
           />
         </div>
       </div>
@@ -125,6 +125,10 @@
         your computer. More information and source available on
         <a href="https://github.com/javierbyte/pintr">Github</a>. Created by
         <a href="https://twitter.com/javierbyte">Javierbyte</a>.
+      </div>
+
+      <div class="instructions">
+        This site uses <a href="https://brutalita.com">Brutalita Sans</a>.
       </div>
 
       <div class="flex">
@@ -160,10 +164,10 @@
         <div class="experimental--smoth-svg--container">
           <div class="input-container">
             <div class="input">
-              <label for="inputSmoothness">Smoothness</label>
+              <label for="smoothingAmount">Smoothing Amount</label>
               <input
                 type="range"
-                id="inputSmoothness"
+                id="smoothingAmount"
                 min="0"
                 max="100"
                 value="15"
