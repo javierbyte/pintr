@@ -3,7 +3,7 @@ import { imageToRawData, ctxToRGBGrayscaleMatrix } from 'canvas-image-utils';
 import Draw from './draw';
 import { canvasDataToGrayscale } from './canvasDataToGrayscale';
 import { scanLine } from './scan';
-import { intRnd } from './utils';
+import { intRnd, tweenValue } from './utils';
 
 import type { configType } from '../main';
 
@@ -12,48 +12,11 @@ const SCALE = 1;
 
 export type Coord = [number, number];
 
-let S: [number[]] | null = null;
+let S: Uint8Array[] = [];
 let COORDS: [Coord, Coord][] = [];
 let CURRENT_DRAWING_ID: number = new Date().getTime() - 1;
 
 const canvasSrc = document.createElement('canvas');
-
-function tweenValue(value: number, tweens: [number, number][]): number {
-  const sortedTweens = [...tweens];
-  sortedTweens.sort((a, b) => a[0] - b[0]);
-
-  if (
-    value < sortedTweens[0][0] ||
-    value > sortedTweens[sortedTweens.length - 1][0]
-  ) {
-    console.error(`Value "${value}" out of range`, {
-      value,
-      tweens,
-      sortedTweens,
-    });
-    return value;
-  }
-
-  for (const tweenIdx in tweens) {
-    const tween = tweens[tweenIdx];
-
-    if (tween[0] === value) {
-      return tween[1];
-    }
-
-    // the value is between this tween and the previous one
-    if (tween[0] > value) {
-      const previousTween = tweens[Number(tweenIdx) - 1];
-
-      const range = tween[0] - previousTween[0];
-      const progress = (value - previousTween[0]) / range;
-
-      return progress * tween[1] + (1 - progress) * previousTween[1];
-    }
-  }
-
-  return value;
-}
 
 export async function pinterCreator(
   imgSrc: string,
@@ -126,29 +89,36 @@ export async function pinterCreator(
     COORDS = [];
 
     // DERIVED RESULTS
-    const tweenDefinition = tweenValue(definition, [
-      [0, 3],
-      [50, 15],
-      [100, 100],
-    ]);
-    const baseLineNumber = tweenValue(density, [
-      [0, 500],
-      [50, 3000],
-      [100, 7000],
-    ]);
+    const tweenDefinition = Math.round(
+      tweenValue(definition, [
+        [0, 3],
+        [50, 15],
+        [100, 75],
+      ])
+    );
+
+    const baseLineNumber = Math.round(
+      tweenValue(density, [
+        [0, 500],
+        [50, 3000],
+        [100, 7000],
+      ])
+    );
 
     const PLUS_COLOR = `rgba(0, 0, 0, 255)`;
     const MINUS_COLOR = `rgba(255, 255, 255, ${
       (100 -
-        tweenValue(contrast, [
-          [0, 20],
-          [50, 75],
-          [100, 90],
-        ])) /
+        Math.round(
+          tweenValue(contrast, [
+            [0, 20],
+            [50, 67],
+            [100, 90],
+          ])
+        )) /
       100
     })`;
 
-    const updateSampleRate = 50 - Math.floor(tweenDefinition / 2);
+    const updateSampleRate = 100 - Math.floor(tweenDefinition / 2);
 
     if (!srcCtx) {
       throw new Error('Canvas error');
@@ -177,7 +147,7 @@ export async function pinterCreator(
         tweenDefinition,
         tweenDefinition * 2
       );
-      let to: Coord;
+      let to: Coord = [intRnd(WIDTH), intRnd(HEIGHT)];
       let light = 255;
       while (remainingCursorsToExplore--) {
         let tmpTo: Coord = [intRnd(WIDTH), intRnd(HEIGHT)];
@@ -212,6 +182,9 @@ export async function pinterCreator(
               color: MINUS_COLOR,
               width: strokeWidth * 1.5,
             });
+            if (!srcCtx) {
+              throw new Error('Canvas error');
+            }
             S = ctxToRGBGrayscaleMatrix(srcCtx);
           }
           drawSequenceLine();

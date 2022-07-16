@@ -1,4 +1,9 @@
-function generateMultiLineSvg(coords, { strokeWidth, size }) {
+import type { Coord } from './PINTR';
+
+function generateMultiLineSvg(
+  coords: [Coord, Coord][],
+  { strokeWidth = 1, size }: { strokeWidth: number; size: [number, number] }
+) {
   return `<svg viewBox="0 0 ${size[0]} ${
     size[1]
   }" xmlns="http://www.w3.org/2000/svg" stroke="black" stroke-width="${strokeWidth}">
@@ -11,7 +16,10 @@ ${coords
   `;
 }
 
-function generateSinglePolySvg(coords, { strokeWidth, size }) {
+function generateSinglePolySvg(
+  coords: [Coord, Coord][],
+  { strokeWidth = 1, size }: { strokeWidth: number; size: [number, number] }
+) {
   return `<svg viewBox="0 0 ${size[0]} ${
     size[1]
   }" xmlns="http://www.w3.org/2000/svg">
@@ -22,7 +30,14 @@ function generateSinglePolySvg(coords, { strokeWidth, size }) {
   `;
 }
 
-export function generateSvg(coords, options) {
+export function generateSvg(
+  coords: [Coord, Coord][],
+  options: {
+    singleLine: true | false;
+    strokeWidth: number;
+    size: [number, number];
+  }
+) {
   console.warn('>generateSvg', options);
   if (options.singleLine) {
     return generateSinglePolySvg(coords, options);

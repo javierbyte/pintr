@@ -5,7 +5,10 @@ const WEIGHTS = {
   b: 0.114 + RED_PREFERENCE * -0.5,
 };
 
-export function canvasDataToGrayscale(canvasData) {
+export function canvasDataToGrayscale(canvasData: ImageData): {
+  canvasData: ImageData;
+  averageLightness: number;
+} {
   let pixels = canvasData.data;
 
   let minLightness = Infinity;

@@ -1,4 +1,4 @@
-export default function Draw(ctx) {
+export default function Draw(ctx: CanvasRenderingContext2D) {
   ctx.beginPath();
   function line(
     from: [number, number],

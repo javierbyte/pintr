@@ -42,8 +42,13 @@ let GLOBAL: {
 };
 
 async function main(imgSrc: string) {
+  const canvasDrawEl: HTMLCanvasElement | null =
+    document.querySelector('canvas#draw');
+  if (!canvasDrawEl) {
+    throw new Error();
+  }
   const PINTR = await pinterCreator(imgSrc, {
-    canvasDrawEl: document.querySelector('canvas#draw'),
+    canvasDrawEl,
     onDraw({ coords }) {
       GLOBAL.coords = coords;
     },
@@ -61,15 +66,21 @@ async function main(imgSrc: string) {
         ...CONFIG,
         size: [GLOBAL.width, GLOBAL.height],
       });
-      document.querySelector('.smooth-svg-container').innerHTML = smoothSvgData;
+
+      const smoothSvgContainerEl = document.querySelector(
+        '.smooth-svg-container'
+      ) as HTMLElement;
+      smoothSvgContainerEl.innerHTML = smoothSvgData;
     },
   });
 
-  const srcImgEl: HTMLImageElement = document.querySelector('#srcImg');
-  const loadingEl: HTMLElement = document.querySelector('.loading');
+  const srcImgEl: HTMLImageElement | null = document.querySelector('#srcImg');
+  const loadingEl: HTMLElement | null = document.querySelector('.loading');
 
-  srcImgEl.style.backgroundImage = `url("${imgSrc}")`;
-  loadingEl.style.display = 'none';
+  if (srcImgEl && loadingEl) {
+    srcImgEl.style.backgroundImage = `url("${imgSrc}")`;
+    loadingEl.style.display = 'none';
+  }
   PINTR.render(CONFIG);
 }
 
@@ -77,25 +88,32 @@ function readFile(evt: Event) {
   evt.preventDefault();
   evt.stopPropagation();
 
-  if (this.files && this.files[0]) {
+  const target = evt.target as HTMLInputElement;
+
+  if (!target || !target.files) return;
+
+  const file = target.files[0] as File;
+
+  if (file) {
     const FR = new FileReader();
     FR.addEventListener('load', function (e) {
+      if (!e || !e.target) return;
       GLOBAL.currentImgSrc = String(e.target.result);
       main(String(e.target.result));
     });
 
-    FR.readAsDataURL(this.files[0]);
+    FR.readAsDataURL(file);
   }
 }
 
-function getInputNumber(selector): number {
-  const inputEl: HTMLInputElement = document.querySelector(selector);
-  return Number(inputEl.value);
+function getInputNumber(selector: string): number {
+  const inputEl: HTMLInputElement | null = document.querySelector(selector);
+  return inputEl ? Number(inputEl.value) : 0;
 }
 
-function getInputBoolean(selector): true | false {
-  const inputEl: HTMLInputElement = document.querySelector(selector);
-  return Boolean(Number(inputEl.value));
+function getInputBoolean(selector: string): true | false {
+  const inputEl: HTMLInputElement | null = document.querySelector(selector);
+  return inputEl ? Boolean(Number(inputEl.value)) : false;
 }
 
 function startNewDrawing() {
@@ -117,14 +135,14 @@ function startNewDrawing() {
     smoothingAmount,
   };
 
-  const smoothSvgContainerEl: HTMLElement = document.querySelector(
+  const smoothSvgContainerEl = document.querySelector(
     '.experimental--smoth-svg--container'
-  );
+  ) as HTMLElement;
   smoothSvgContainerEl.style.display = makeSmoothSvg ? 'block' : 'none';
 
-  const smooghSvgContainerWarningEl: HTMLElement = document.querySelector(
+  const smooghSvgContainerWarningEl = document.querySelector(
     '.experimental--smoth-svg--container--warning'
-  );
+  ) as HTMLElement;
   smooghSvgContainerWarningEl.style.display = singleLine ? 'none' : 'block';
 
   main(GLOBAL.currentImgSrc);
@@ -133,15 +151,18 @@ function startNewDrawing() {
 let count = 0;
 
 function onDrop(ev: DragEvent) {
-  console.log('File(s) dropped');
-
   // Prevent default behavior (Prevent file from being opened)
   ev.preventDefault();
 
-  if (!ev.dataTransfer.files || !ev.dataTransfer.files[0]) return;
+  if (!ev.dataTransfer || !ev.dataTransfer.files || !ev.dataTransfer.files[0])
+    return;
 
   const FR = new FileReader();
   FR.addEventListener('load', function (e) {
+    if (!e || !e.target || !e.target.result) {
+      return;
+    }
+
     GLOBAL.currentImgSrc = String(e.target.result);
     main(String(e.target.result));
     document.body.classList.remove('-dragging');
@@ -159,7 +180,6 @@ function onDragOver(evt: DragEvent) {
 function onDragEnter(evt: DragEvent) {
   evt.stopPropagation();
   count++;
-  console.log(count);
 
   if (count) {
     document.body.classList.add('-dragging');
@@ -171,7 +191,6 @@ function onDragEnter(evt: DragEvent) {
 function onDragLeave(evt: DragEvent) {
   evt.stopPropagation();
   count--;
-  console.log(count);
 
   if (count) {
     document.body.classList.add('-dragging');
@@ -181,45 +200,64 @@ function onDragLeave(evt: DragEvent) {
 }
 
 // ADD LISTENERS
-const appEl = document.querySelector('.app');
+const appEl = document.querySelector('.app') as HTMLElement;
 appEl.addEventListener('drop', onDrop);
 appEl.addEventListener('dragover', onDragOver);
 appEl.addEventListener('dragenter', onDragEnter);
 appEl.addEventListener('dragleave', onDragLeave);
 
-const inputImageFileEl: HTMLInputElement =
-  document.querySelector('#inputImageFile');
+const inputImageFileEl = document.querySelector(
+  '#inputImageFile'
+) as HTMLInputElement;
 
 inputImageFileEl.addEventListener('change', readFile);
-document.querySelector('#inputImageButton').addEventListener('click', () => {
+
+const inputImageButtonEl = document.querySelector(
+  '#inputImageButton'
+) as HTMLElement;
+inputImageButtonEl.addEventListener('click', () => {
   inputImageFileEl.click();
 });
 
 document.querySelectorAll('[data-start-drawing]').forEach((input) => {
-  input.addEventListener('change', debounce(startNewDrawing, 256));
+  input.addEventListener('change', debounce(startNewDrawing, 32));
 });
 
-document.querySelector('#smoothingAmount').addEventListener(
+const smoothingAmountEl = document.querySelector(
+  '#smoothingAmount'
+) as HTMLInputElement;
+smoothingAmountEl.addEventListener(
   'change',
   debounce(() => {
+    CONFIG.smoothingAmount = getInputNumber('#smoothingAmount');
+
     const smoothSvgData = generateSmoothSvg(GLOBAL.coords, {
       ...CONFIG,
       size: [GLOBAL.width, GLOBAL.height],
     });
-    document.querySelector('.smooth-svg-container').innerHTML = smoothSvgData;
+    const smoothSvgContainerEl = document.querySelector(
+      '.smooth-svg-container'
+    ) as HTMLElement;
+    smoothSvgContainerEl.innerHTML = smoothSvgData;
   }, 128)
 );
 
-document.querySelector('#download').addEventListener('click', () => {
+const downloadEl = document.querySelector('#download') as HTMLButtonElement;
+downloadEl.addEventListener('click', () => {
   const link = document.createElement('a');
-  const canvasDrawEl: HTMLCanvasElement = document.querySelector('canvas#draw');
+  const canvasDrawEl = document.querySelector(
+    'canvas#draw'
+  ) as HTMLCanvasElement;
 
   link.download = 'PINTR.png';
   link.href = canvasDrawEl.toDataURL();
   link.click();
 });
 
-document.querySelector('#downloadSvg').addEventListener('click', () => {
+const downloadSvgEl = document.querySelector(
+  '#downloadSvg'
+) as HTMLButtonElement;
+downloadSvgEl.addEventListener('click', () => {
   const link = document.createElement('a');
   link.download = 'PINTR.svg';
   const svgData = generateSvg(GLOBAL.coords, {
@@ -232,7 +270,10 @@ document.querySelector('#downloadSvg').addEventListener('click', () => {
   link.click();
 });
 
-document.querySelector('#downloadSmoothSvg').addEventListener('click', () => {
+const downloadSmoothSvgEl = document.querySelector(
+  '#downloadSmoothSvg'
+) as HTMLButtonElement;
+downloadSmoothSvgEl.addEventListener('click', () => {
   const link = document.createElement('a');
   link.download = 'PINTR.svg';
   const smoothSvgData = generateSmoothSvg(GLOBAL.coords, {

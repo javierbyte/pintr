@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build --base=https://javier.xyz/pintr/",
     "serve": "vite preview",
-    "type-check": "tsc main.ts --noEmit",
+    "type-check": "tsc --noEmit -p tsconfig.json",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },

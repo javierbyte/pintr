@@ -1,14 +1,22 @@
 import type { Coord } from './PINTR';
 
+import { tweenValue } from './utils';
+
 export function generateSmoothSvg(
   coords: [Coord, Coord][],
   {
-    smoothingAmount = 0.15,
+    smoothingAmount = 50,
     strokeWidth = 1,
     size,
   }: { smoothingAmount: number; strokeWidth?: number; size: [number, number] }
 ) {
   const points = coords.map((coord) => coord[0]);
+
+  const calculatedSmoothing = tweenValue(smoothingAmount, [
+    [0, 0],
+    [50, 0.1],
+    [100, 1],
+  ]);
 
   // Properties of a line
   // I:  - pointA (array) [x,y]: coordinates
@@ -45,8 +53,9 @@ export function generateSmoothSvg(
     const o = line(p, n);
 
     // If is end-control-point, add PI to the angle to go backward
+
     const angle = o.angle + (reverse ? Math.PI : 0);
-    const length = o.length * smoothingAmount;
+    const length = o.length * calculatedSmoothing;
 
     // The control point position is relative to the current point
     const x = current[0] + Math.cos(angle) * length;

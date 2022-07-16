@@ -1,6 +1,6 @@
 import type { Coord } from './PINTR';
 
-export function scanLine(from: Coord, to: Coord, matrix: [number[]]) {
+export function scanLine(from: Coord, to: Coord, matrix: Uint8Array[]) {
   let total = 0;
 
   const x = from[0];
