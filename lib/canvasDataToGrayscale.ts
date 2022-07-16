@@ -18,6 +18,10 @@ export function canvasDataToGrayscale(canvasData) {
       pixels[i + 1] * WEIGHTS.g +
       pixels[i + 2] * WEIGHTS.b;
 
+    if (pixels[i + 3] < 128) {
+      lightness = 255;
+    }
+
     minLightness = Math.min(minLightness, lightness);
     maxLightness = Math.max(maxLightness, lightness);
     averageLightness += lightness;

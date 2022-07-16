@@ -1,4 +1,6 @@
-export function scanLine(from, to, matrix) {
+import type { Coord } from './PINTR';
+
+export function scanLine(from: Coord, to: Coord, matrix: [number[]]) {
   let total = 0;
 
   const x = from[0];
@@ -18,7 +20,12 @@ export function scanLine(from, to, matrix) {
   return Math.round(total / precision);
 }
 
-export function scanLineUint8(from, to, arr, width) {
+export function scanLineUint8(
+  from: Coord,
+  to: Coord,
+  arr: number[],
+  width: number
+) {
   let total = 0;
 
   const x = from[0];

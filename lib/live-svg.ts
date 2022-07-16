@@ -1,11 +1,3 @@
-// export default function liveSvg() {
-//   return {
-//     clear: () => {},
-//     lineBuffer: () => {},
-//     stroke: () => {}
-//   }
-// }
-
 export default function liveSvg(container) {
   const internal = {
     toFlush: [],

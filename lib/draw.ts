@@ -1,6 +1,10 @@
 export default function Draw(ctx) {
   ctx.beginPath();
-  function line(from, to, ops = {}) {
+  function line(
+    from: [number, number],
+    to: [number, number],
+    ops: { color?: string; width?: number } = { color: '#000', width: 1 }
+  ) {
     const { color = '#000', width = 1 } = ops;
 
     ctx.beginPath();
@@ -11,12 +15,14 @@ export default function Draw(ctx) {
     ctx.stroke();
   }
 
-  function lineBuffer(from, to) {
+  function lineBuffer(from: [number, number], to: [number, number]) {
     ctx.moveTo(from[0], from[1]);
     ctx.lineTo(to[0], to[1]);
   }
 
-  function stroke(ops = {}) {
+  function stroke(
+    ops: { color?: string; width?: number } = { color: '#000', width: 1 }
+  ) {
     const { color = '#000', width = 1 } = ops;
 
     ctx.lineWidth = width;

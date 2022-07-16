@@ -9,6 +9,8 @@
 
 body {
   touch-action: pan-y;
+  margin: 0;
+  padding: 0;
 }
 
 body,
@@ -18,7 +20,13 @@ button {
   letter-spacing: -1px;
   font-weight: 400;
   font-style: normal;
-  font-size: 25px;
+  font-size: 24px;
+}
+
+.app {
+  height: 100vh;
+  margin: 0;
+  padding: 16px 0 0;
 }
 
 h1 {
@@ -76,8 +84,23 @@ html {
 
 body {
   background: #ecf0f1;
-  padding: 16px 0 32px;
-  margin: 0;
+}
+
+body.-dragging::after {
+  text-align: center;
+  display: flex;
+  content: 'Drop your image to make a new drawing';
+  background: #fffe;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  border: 4px dashed #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 *,
@@ -108,7 +131,8 @@ body {
   padding: 2px 6px;
   font-size: 14px;
   position: absolute;
-  z-index: 1;
+  top: 16px;
+  left: 16px;
   letter-spacing: 0.5px;
 }
 

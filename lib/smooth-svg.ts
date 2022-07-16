@@ -1,6 +1,12 @@
+import type { Coord } from './PINTR';
+
 export function generateSmoothSvg(
-  coords,
-  { smoothing = 0.15, strokeWidth, size }
+  coords: [Coord, Coord][],
+  {
+    smoothingAmount = 0.15,
+    strokeWidth = 1,
+    size,
+  }: { smoothingAmount: number; strokeWidth?: number; size: [number, number] }
 ) {
   const points = coords.map((coord) => coord[0]);
 
@@ -8,7 +14,7 @@ export function generateSmoothSvg(
   // I:  - pointA (array) [x,y]: coordinates
   //     - pointB (array) [x,y]: coordinates
   // O:  - (object) { length: l, angle: a }: properties of the line
-  const line = (pointA, pointB) => {
+  const line = (pointA: Coord, pointB: Coord) => {
     const lengthX = pointB[0] - pointA[0];
     const lengthY = pointB[1] - pointA[1];
     return {
@@ -23,7 +29,12 @@ export function generateSmoothSvg(
   //     - next (array) [x, y]: next point coordinates
   //     - reverse (boolean, optional): sets the direction
   // O:  - (array) [x,y]: a tuple of coordinates
-  const controlPoint = (current, previous, next, reverse) => {
+  const controlPoint = (
+    current: Coord,
+    previous: Coord,
+    next: Coord,
+    reverse?: true | false
+  ) => {
     // When 'current' is the first or last point of the array
     // 'previous' or 'next' don't exist.
     // Replace with 'current'
@@ -35,7 +46,7 @@ export function generateSmoothSvg(
 
     // If is end-control-point, add PI to the angle to go backward
     const angle = o.angle + (reverse ? Math.PI : 0);
-    const length = o.length * smoothing;
+    const length = o.length * smoothingAmount;
 
     // The control point position is relative to the current point
     const x = current[0] + Math.cos(angle) * length;
@@ -48,7 +59,7 @@ export function generateSmoothSvg(
   //     - i (integer): index of 'point' in the array 'a'
   //     - a (array): complete array of points coordinates
   // O:  - (string) 'C x2,y2 x1,y1 x,y': SVG cubic bezier C command
-  const bezierCommand = (point, i, a) => {
+  const bezierCommand = (point: Coord, i: number, a: Coord[]) => {
     // start control point
     const cps = controlPoint(a[i - 1], a[i - 2], point);
 
@@ -65,7 +76,10 @@ export function generateSmoothSvg(
   //           - a (array): complete array of points coordinates
   //       O:  - (string) a svg path command
   // O:  - (string): a Svg <path> element
-  const svgPath = (points, command) => {
+  const svgPath = (
+    points: Coord[],
+    command: (point: Coord, i: number, a: Coord[]) => void
+  ) => {
     // build the d attributes by looping over the points
     const d = points.reduce(
       (acc, point, i, a) =>

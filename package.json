@@ -7,16 +7,18 @@
     "dev": "vite",
     "build": "vite build --base=https://javier.xyz/pintr/",
     "serve": "vite preview",
+    "type-check": "tsc main.ts --noEmit",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
-    "eslint": "^8.15.0",
+    "eslint": "^8.19.0",
     "gh-pages": "^4.0.0",
-    "vite": "^2.9.9"
+    "typescript": "^4.7.4",
+    "vite": "^3.0.0"
   },
   "dependencies": {
-    "canvas-image-utils": "^2.1.1"
+    "canvas-image-utils": "^2.3.2"
   },
   "author": "Javier Bórquez <hi@javier.xyz>",
   "license": "BSD-3-Clause"

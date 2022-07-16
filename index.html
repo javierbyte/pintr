@@ -31,155 +31,160 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <div class="flex">
-      <h1>PINTR</h1>
-      <button id="inputImageButton" type="file">New image</button>
-      <input id="inputImageFile" type="file" />
-    </div>
-
-    <div class="inline">
-      <div class="padding">
-        <div class="label">Draw</div>
-        <canvas id="draw"></canvas>
+    <div class="app">
+      <div class="flex">
+        <h1>PINTR</h1>
+        <input id="inputImageFile" type="file" />
+        <button id="inputImageButton" type="file">New image</button>
       </div>
 
-      <div class="srcimage-container padding">
-        <div class="label">Source</div>
-        <div id="srcImg"></div>
-      </div>
-    </div>
+      <div class="inline">
+        <div class="padding">
+          <canvas id="draw"></canvas>
+          <div class="label">Draw</div>
+        </div>
 
-    <canvas id="src" style="display: none"></canvas>
-
-    <div class="input-container">
-      <div class="input">
-        <label for="lines">Lines</label>
-        <input
-          type="range"
-          data-start-drawing
-          id="lines"
-          min="3"
-          max="120"
-          value="50"
-        />
+        <div class="srcimage-container padding">
+          <div id="srcImg"></div>
+          <div class="label">Source</div>
+        </div>
       </div>
 
-      <div class="input">
-        <label for="contrast">Contrast</label>
-        <input
-          type="range"
-          data-start-drawing
-          id="contrast"
-          min="20"
-          max="90"
-          value="70"
-        />
-      </div>
-
-      <div class="input">
-        <label for="definition">Definition</label>
-        <input
-          type="range"
-          data-start-drawing
-          id="definition"
-          min="4"
-          max="100"
-          value="18"
-        />
-      </div>
-
-      <div class="input">
-        <label for="singleLine">Single Line</label>
-        <input
-          type="range"
-          data-start-drawing
-          class="toggle"
-          id="singleLine"
-          min="0"
-          max="1"
-          value="1"
-        />
-      </div>
-
-      <div class="input">
-        <label for="strokeWidth">Stroke width</label>
-        <input
-          type="range"
-          data-start-drawing
-          id="strokeWidth"
-          step="0.25"
-          min="0.5"
-          max="3"
-          value="1.25"
-        />
-      </div>
-    </div>
-
-    <div class="instructions">
-      <strong>1.</strong>Select an image, images with a face, white or light
-      backgrounds and good contrast work better. <strong>2.</strong>Play with
-      the controls. <strong>3.</strong>Download. Your pictures never leave your
-      computer. More information and source available on
-      <a href="https://github.com/javierbyte/pintr">Github</a>. Created by
-      <a href="https://twitter.com/javierbyte">Javierbyte</a>.
-    </div>
-
-    <div class="flex">
-      <button id="download">Download PNG</button>
-      <button id="downloadSvg">Download SVG</button>
-    </div>
-
-    <div class="experimental--smooth-svg">
-      <div class="instructions">Other Exports:</div>
+      <canvas id="src" style="display: none"></canvas>
 
       <div class="input-container">
         <div class="input">
-          <label for="makeSmoothSvg">Smooth SVG</label>
+          <label for="density">Density</label>
           <input
-            data-start-drawing
             type="range"
+            data-start-drawing
+            id="density"
+            min="0"
+            max="100"
+            value="50"
+          />
+        </div>
+
+        <div class="input">
+          <label for="contrast">Contrast</label>
+          <input
+            type="range"
+            data-start-drawing
+            id="contrast"
+            min="0"
+            max="100"
+            value="50"
+          />
+        </div>
+
+        <div class="input">
+          <label for="definition">Definition</label>
+          <input
+            type="range"
+            data-start-drawing
+            id="definition"
+            min="0"
+            max="100"
+            value="50"
+          />
+        </div>
+
+        <div class="input">
+          <label for="singleLine">Single Line</label>
+          <input
+            type="range"
+            data-start-drawing
             class="toggle"
-            id="makeSmoothSvg"
+            id="singleLine"
             min="0"
             max="1"
-            value="0"
+            value="1"
+          />
+        </div>
+
+        <div class="input">
+          <label for="strokeWidth">Stroke width</label>
+          <input
+            type="range"
+            data-start-drawing
+            id="strokeWidth"
+            step="0.25"
+            min="0.5"
+            max="3"
+            value="1.5"
           />
         </div>
       </div>
 
-      <div
-        class="padding experimental--smoth-svg--container--warning"
-        style="display: none"
-      >
-        Smooth SVG is only available for "single line" drawings.
+      <div class="instructions">
+        <strong>1.</strong>Select an image, images with a face, white or light
+        backgrounds and good contrast work better. <strong>2.</strong>Play with
+        the controls. <strong>3.</strong>Download. Your pictures never leave
+        your computer. More information and source available on
+        <a href="https://github.com/javierbyte/pintr">Github</a>. Created by
+        <a href="https://twitter.com/javierbyte">Javierbyte</a>.
       </div>
 
-      <div class="experimental--smoth-svg--container">
+      <div class="instructions">
+        This site uses <a href="https://brutalita.com">Brutalita Sans</a>.
+      </div>
+
+      <div class="flex">
+        <button id="download">Download PNG</button>
+        <button id="downloadSvg">Download SVG</button>
+      </div>
+
+      <div class="experimental--smooth-svg">
+        <div class="instructions">Other Exports:</div>
+
         <div class="input-container">
           <div class="input">
-            <label for="inputSmoothness">Smoothness</label>
+            <label for="makeSmoothSvg">Smooth SVG</label>
             <input
+              data-start-drawing
               type="range"
-              id="inputSmoothness"
+              class="toggle"
+              id="makeSmoothSvg"
               min="0"
-              max="100"
-              value="15"
+              max="1"
+              value="0"
             />
           </div>
         </div>
-        <div class="padding">
-          <div class="label">Smooth SVG</div>
-          <div class="smooth-svg-container"></div>
+
+        <div
+          class="padding experimental--smoth-svg--container--warning"
+          style="display: none"
+        >
+          Smooth SVG is only available for "single line" drawings.
         </div>
 
-        <button id="downloadSmoothSvg">Download SVG</button>
+        <div class="experimental--smoth-svg--container">
+          <div class="input-container">
+            <div class="input">
+              <label for="smoothingAmount">Smoothing Amount</label>
+              <input
+                type="range"
+                id="smoothingAmount"
+                min="0"
+                max="100"
+                value="15"
+              />
+            </div>
+          </div>
+          <div class="padding">
+            <div class="label">Smooth SVG</div>
+            <div class="smooth-svg-container"></div>
+          </div>
+
+          <button id="downloadSmoothSvg">Download SVG</button>
+        </div>
       </div>
+
+      <div class="loading"><span>Loading...</span></div>
     </div>
-
-    <div class="loading"><span>Loading...</span></div>
-
     <!-- <script src="./weights/face-api.min.js"></script> -->
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="/main.ts"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
