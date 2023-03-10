@@ -20,17 +20,16 @@
       content="Create plotter-like line drawings from your images."
     />
 
-    <link rel="canonical" href="https://javier.xyz/pintr/" />
-    <meta property="og:url" content="https://javier.xyz/pintr/" />
+    <link rel="canonical" href="https://javier.xyz/pintr" />
+    <meta property="og:url" content="https://javier.xyz/pintr" />
 
     <meta property="og:image:width" content="1600" />
     <meta property="og:image:height" content="900" />
     <meta property="og:image" content="https://javier.xyz/pintr/pintr.jpg" />
 
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     
-    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index-8abe34ab.js"></script>
-    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index-7d834783.css">
+    <script type="module" crossorigin src="https://javier.xyz/pintr/assets/index.b3c0fb25.js"></script>
+    <link rel="stylesheet" href="https://javier.xyz/pintr/assets/index.abfb2832.css">
   </head>
   <body>
     <div class="app">
@@ -110,32 +109,19 @@
             type="range"
             data-start-drawing
             id="strokeWidth"
-            step="1"
-            min="0"
-            max="15"
-            value="5"
-          />
-        </div>
-
-        <div class="input">
-          <label for="strokeOpacity">Opacity</label>
-          <input
-            type="range"
-            data-start-drawing
-            id="opacity"
-            step="0.2"
-            min="0.2"
-            max="1"
-            value="1"
+            step="0.25"
+            min="0.5"
+            max="3"
+            value="1.5"
           />
         </div>
       </div>
 
       <div class="instructions">
-        <strong>1. </strong>Select an image. Images with good contrast and white
-        or light backgrounds work better. <strong>2. </strong>Play with the
-        controls. <strong>3. </strong>Download. Your pictures never leave your
-        computer. More information and source available on
+        <strong>1.</strong>Select an image, images with a face, white or light
+        backgrounds and good contrast work better. <strong>2.</strong>Play with
+        the controls. <strong>3.</strong>Download. Your pictures never leave
+        your computer. More information and source available on
         <a href="https://github.com/javierbyte/pintr">Github</a>. Created by
         <a href="https://twitter.com/javierbyte">Javierbyte</a>.
       </div>
@@ -198,7 +184,6 @@
 
       <div class="loading"><span>Loading...</span></div>
     </div>
-    <!-- <script src="./weights/face-api.min.js"></script> -->
     
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
