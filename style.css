@@ -291,3 +291,8 @@ input[type='range'].toggle::-moz-range-thumb {
 .experimental--smooth-svg {
   margin-top: 32px;
 }
+
+.experimental--smoth-svg--container {
+  display: none;
+  padding-bottom: 64px;
+}

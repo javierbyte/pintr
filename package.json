@@ -1,11 +1,11 @@
 {
   "name": "PINTR",
-  "homepage": "https://javier.xyz/pintr/",
+  "homepage": "https://javier.xyz/pintr",
   "description": "Create single line SVG illustrations from your pictures.",
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base=https://javier.xyz/pintr/",
+    "build": "vite build --base=/pintr",
     "serve": "vite preview",
     "type-check": "tsc --noEmit -p tsconfig.json",
     "predeploy": "npm run build",
@@ -18,7 +18,7 @@
     "vite": "^3.0.0"
   },
   "dependencies": {
-    "canvas-image-utils": "^2.3.2"
+    "canvas-image-utils": "^2.5.0"
   },
   "author": "Javier Bórquez <hi@javier.xyz>",
   "license": "BSD-3-Clause"

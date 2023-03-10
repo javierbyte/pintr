@@ -17,7 +17,7 @@ export type configType = {
   smoothingAmount: number;
 };
 
-const DEFAULT_IMG = './test.jpg';
+const DEFAULT_IMG = '/pintr/test.jpg';
 
 let CONFIG: configType = {
   contrast: 50,
@@ -61,6 +61,8 @@ async function main(imgSrc: string) {
     },
     onFinish({ coords }) {
       if (!CONFIG.makeSmoothSvg) return;
+
+      console.warn('MAKING');
 
       const smoothSvgData = generateSmoothSvg(coords, {
         ...CONFIG,
