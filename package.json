@@ -1,5 +1,5 @@
 {
-  "name": "PINTR",
+  "name": "pintr",
   "homepage": "https://javier.xyz/pintr",
   "description": "Create single line SVG illustrations from your pictures.",
   "version": "1.0.0",
@@ -8,8 +8,7 @@
     "build": "vite build --base=/pintr",
     "serve": "vite preview",
     "type-check": "tsc --noEmit -p tsconfig.json",
-    "predeploy": "pnpm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "pnpm run build && gh-pages -d dist"
   },
   "devDependencies": {
     "eslint": "^9.3.0",
