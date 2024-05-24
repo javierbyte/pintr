@@ -17,7 +17,7 @@ export type configType = {
   smoothingAmount: number;
 };
 
-const DEFAULT_IMG = '/pintr/test.jpg';
+const DEFAULT_IMG = '/test.jpg';
 
 let CONFIG: configType = {
   contrast: 50,

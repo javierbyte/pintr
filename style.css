@@ -10,7 +10,7 @@
 body {
   touch-action: pan-y;
   margin: 0;
-  padding: 0;
+  padding: 0.25rem 0 1rem;
 }
 
 body,
@@ -23,15 +23,9 @@ button {
   font-size: 24px;
 }
 
-.app {
-  height: 100vh;
-  margin: 0;
-  padding: 16px 0 0;
-}
-
 h1 {
   font-weight: 400;
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin: 0;
   padding: 0;
   line-height: 50px;
@@ -65,8 +59,7 @@ button {
   background: #ecf0f1;
   white-space: nowrap;
   color: #000;
-  font-size: 1.25rem;
-  letter-spacing: -1.2px;
+  font-size: 1rem;
 }
 button:hover {
   cursor: pointer;
@@ -199,7 +192,7 @@ canvas#src {
 }
 
 input[type='range'] {
-  margin-left: 12px;
+  margin-left: 8px;
   flex: 1;
   width: 180px;
   appearance: none;
@@ -234,7 +227,7 @@ input[type='range']:focus {
   outline: none;
 }
 input[type='range'].toggle {
-  width: 64px;
+  width: 48px;
 }
 input[type='range'].toggle::-webkit-slider-thumb {
   width: 32px;
