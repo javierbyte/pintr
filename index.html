@@ -27,9 +27,8 @@
     <meta property="og:image:height" content="900" />
     <meta property="og:image" content="https://javier.xyz/pintr/pintr.jpg" />
 
-    
-    <script type="module" crossorigin src="/pintr/assets/index.734d862a.js"></script>
-    <link rel="stylesheet" href="/pintr/assets/index.248add18.css">
+    <script type="module" crossorigin src="/pintr/assets/index-55X1ltun.js"></script>
+    <link rel="stylesheet" crossorigin href="/pintr/assets/index-C9XztkjC.css">
   </head>
   <body>
     <div class="app">
@@ -42,7 +41,6 @@
       <div class="inline">
         <div class="padding">
           <canvas id="draw"></canvas>
-          <div class="label">Draw</div>
         </div>
 
         <div class="srcimage-container padding">
@@ -111,10 +109,15 @@
             id="strokeWidth"
             step="0.25"
             min="0.5"
-            max="3"
+            max="5"
             value="1.5"
           />
         </div>
+      </div>
+
+      <div class="flex">
+        <button id="download">Download PNG</button>
+        <button id="downloadSvg">Download SVG</button>
       </div>
 
       <div class="instructions">
@@ -122,17 +125,14 @@
         backgrounds and good contrast work better. <strong>2.</strong>Play with
         the controls. <strong>3.</strong>Download. Your pictures never leave
         your computer. More information and source available on
-        <a href="https://github.com/javierbyte/pintr">Github</a>. Created by
-        <a href="https://twitter.com/javierbyte">Javierbyte</a>.
+        <a href="https://github.com/javierbyte/pintr">Github</a>.
       </div>
 
       <div class="instructions">
-        This site uses <a href="https://brutalita.com">Brutalita Sans</a>.
-      </div>
-
-      <div class="flex">
-        <button id="download">Download PNG</button>
-        <button id="downloadSvg">Download SVG</button>
+        Created by
+        <a href="https://javier.xyz">javierbyte</a>. This site uses
+        <a href="https://brutalita.com">Brutalita Sans</a>. Follow me on
+        <a href="https://x.com/javierbyte">X</a> to stay updated.
       </div>
 
       <div class="experimental--smooth-svg">
@@ -184,7 +184,6 @@
 
       <div class="loading"><span>Loading...</span></div>
     </div>
-    
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
