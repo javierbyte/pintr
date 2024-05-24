@@ -8,7 +8,7 @@
     "build": "vite build --base=/pintr",
     "serve": "vite preview",
     "type-check": "tsc --noEmit -p tsconfig.json",
-    "predeploy": "npm run build",
+    "predeploy": "pnpm run build",
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
