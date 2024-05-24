@@ -42,7 +42,9 @@ export async function pinterCreator(
 
   canvasSrc.width = WIDTH;
   canvasSrc.height = HEIGHT;
-  const srcCtx: CanvasRenderingContext2D | null = canvasSrc.getContext('2d');
+  const srcCtx: CanvasRenderingContext2D | null = canvasSrc.getContext('2d', {
+    willReadFrequently: true,
+  });
 
   if (!srcCtx) {
     throw new Error("Failed to initiate 'CanvasRenderingContext2D'");
