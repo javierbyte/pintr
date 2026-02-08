@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Brutalita';
-  src: url('/Brutalita-Regular.woff2') format('woff2');
+  src: url('./fonts/Brutalita-Regular.woff2') format('woff2');
 }
 
 body {
