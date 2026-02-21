@@ -4,7 +4,7 @@ export default {
     port: 3000,
   },
   build: {
-    chunkSizeWarningLimit: 100000000,
+    chunkSizeWarningLimit: 500,
   },
   plugins: [
     {

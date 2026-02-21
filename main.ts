@@ -11,8 +11,8 @@ export type configType = {
   contrast: number;
   definition: number;
   density: number;
-  makeSmoothSvg: true | false;
-  singleLine: true | false;
+  makeSmoothSvg: boolean;
+  singleLine: boolean;
   strokeWidth: number;
   smoothingAmount: number;
 };
@@ -61,8 +61,6 @@ async function main(imgSrc: string) {
     },
     onFinish({ coords }) {
       if (!CONFIG.makeSmoothSvg) return;
-
-      console.warn('MAKING');
 
       const smoothSvgData = generateSmoothSvg(coords, {
         ...CONFIG,
@@ -113,7 +111,7 @@ function getInputNumber(selector: string): number {
   return inputEl ? Number(inputEl.value) : 0;
 }
 
-function getInputBoolean(selector: string): true | false {
+function getInputBoolean(selector: string): boolean {
   const inputEl: HTMLInputElement | null = document.querySelector(selector);
   return inputEl ? Boolean(Number(inputEl.value)) : false;
 }
@@ -138,14 +136,14 @@ function startNewDrawing() {
   };
 
   const smoothSvgContainerEl = document.querySelector(
-    '.experimental--smoth-svg--container'
+    '.experimental--smooth-svg--container'
   ) as HTMLElement;
   smoothSvgContainerEl.style.display = makeSmoothSvg ? 'block' : 'none';
 
-  const smooghSvgContainerWarningEl = document.querySelector(
-    '.experimental--smoth-svg--container--warning'
+  const smoothSvgContainerWarningEl = document.querySelector(
+    '.experimental--smooth-svg--container--warning'
   ) as HTMLElement;
-  smooghSvgContainerWarningEl.style.display = singleLine ? 'none' : 'block';
+  smoothSvgContainerWarningEl.style.display = singleLine ? 'none' : 'block';
 
   main(GLOBAL.currentImgSrc);
 }
@@ -270,6 +268,7 @@ downloadSvgEl.addEventListener('click', () => {
   const svgUrl = URL.createObjectURL(svgBlob);
   link.href = svgUrl;
   link.click();
+  setTimeout(() => URL.revokeObjectURL(svgUrl), 1000);
 });
 
 const downloadSmoothSvgEl = document.querySelector(
@@ -288,6 +287,7 @@ downloadSmoothSvgEl.addEventListener('click', () => {
   const svgUrl = URL.createObjectURL(svgBlob);
   link.href = svgUrl;
   link.click();
+  setTimeout(() => URL.revokeObjectURL(svgUrl), 1000);
 });
 
 startNewDrawing();

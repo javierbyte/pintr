@@ -42,8 +42,8 @@ export function tweenValue(value: number, tweens: [number, number][]): number {
     return value;
   }
 
-  for (const tweenIdx in tweens) {
-    const tween = tweens[tweenIdx];
+  for (let i = 0; i < tweens.length; i++) {
+    const tween = tweens[i];
 
     if (tween[0] === value) {
       return tween[1];
@@ -51,7 +51,7 @@ export function tweenValue(value: number, tweens: [number, number][]): number {
 
     // the value is between this tween and the previous one
     if (tween[0] > value) {
-      const previousTween = tweens[Number(tweenIdx) - 1];
+      const previousTween = tweens[i - 1];
 
       const range = tween[0] - previousTween[0];
       const progress = (value - previousTween[0]) / range;

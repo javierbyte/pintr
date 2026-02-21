@@ -41,7 +41,7 @@ export function generateSmoothSvg(
     current: Coord,
     previous: Coord,
     next: Coord,
-    reverse?: true | false
+    reverse?: boolean
   ) => {
     // When 'current' is the first or last point of the array
     // 'previous' or 'next' don't exist.
@@ -99,12 +99,6 @@ export function generateSmoothSvg(
     );
     return `<path d="${d}" fill="none" stroke="black" stroke-width="${strokeWidth}" />`;
   };
-
-  // const svg = document.querySelector('.svg')
-
-  // svg.innerHTML = svgPath(points, bezierCommand)
-
-  // console.log(svgPath(points, bezierCommand))
 
   return `<svg viewBox="0 0 ${size[0]} ${
     size[1]

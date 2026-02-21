@@ -8,13 +8,12 @@ import { intRnd, tweenValue } from './utils';
 import type { configType } from '../main';
 
 const DRAW_SIZE = 1080;
-const SCALE = 1;
 
 export type Coord = [number, number];
 
 let S: Uint8Array[] = [];
 let COORDS: [Coord, Coord][] = [];
-let CURRENT_DRAWING_ID: number = new Date().getTime() - 1;
+let CURRENT_DRAWING_ID: number = Date.now() - 1;
 
 const canvasSrc = document.createElement('canvas');
 
@@ -53,8 +52,8 @@ export async function pinterCreator(
   const pencilSrc = Draw(srcCtx);
 
   const canvasDraw = canvasDrawEl || document.createElement('canvas');
-  canvasDraw.width = WIDTH * SCALE;
-  canvasDraw.height = HEIGHT * SCALE;
+  canvasDraw.width = WIDTH;
+  canvasDraw.height = HEIGHT;
 
   const srcImgEl: HTMLImageElement | null = document.querySelector('#srcImg');
   const drawCtx: CanvasRenderingContext2D | null = canvasDraw.getContext('2d');
@@ -67,11 +66,8 @@ export async function pinterCreator(
   }
 
   srcImgEl.style.aspectRatio = String(WIDTH / HEIGHT);
-  drawCtx.scale(SCALE, SCALE);
 
   const pencilDraw = Draw(drawCtx);
-
-  console.log('> Starting PINTR');
   onLoad({
     width: WIDTH,
     height: HEIGHT,
@@ -79,15 +75,10 @@ export async function pinterCreator(
 
   const { canvasData, averageLightness } = canvasDataToGrayscale(data);
 
-  // document.body.appendChild(canvasSrc);
-  // document.body.appendChild(canvasDraw);
-
   async function render(config: configType) {
-    console.log('> Render PINTR', config);
-
     const { density, singleLine, contrast, definition, strokeWidth } = config;
 
-    CURRENT_DRAWING_ID = new Date().getTime();
+    CURRENT_DRAWING_ID = Date.now();
     COORDS = [];
 
     // DERIVED RESULTS
@@ -129,7 +120,6 @@ export async function pinterCreator(
     srcCtx.putImageData(canvasData, 0, 0);
     S = ctxToRGBGrayscaleMatrix(srcCtx);
 
-    let startTime = new Date().getTime();
     let cursor: Coord = [Math.floor(WIDTH / 2), Math.floor(HEIGHT / 2)];
 
     function drawSequenceLine() {
@@ -174,8 +164,8 @@ export async function pinterCreator(
     let remainingLines = totalLinesToDraw;
     function drawLinesInBatch(currentDrawing: number) {
       return new Promise((resolve) => {
-        const time = new Date().getTime();
-        while (new Date().getTime() < time + 15 && remainingLines-- > 0) {
+        const time = Date.now();
+        while (Date.now() < time + 15 && remainingLines-- > 0) {
           if (currentDrawing !== CURRENT_DRAWING_ID) return;
 
           // here we put the changes back to the src and update our matrix
@@ -206,12 +196,6 @@ export async function pinterCreator(
       }
       onDraw && onDraw({ coords: COORDS });
       onFinish && onFinish({ coords: COORDS });
-
-      let endTime = new Date().getTime();
-      console.log(
-        '> Lines per second:',
-        (totalLinesToDraw / (endTime - startTime)) * 1000
-      );
     }
     keepBatching(CURRENT_DRAWING_ID);
   }

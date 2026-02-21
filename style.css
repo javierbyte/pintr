@@ -1,10 +1,7 @@
-* {
-  position: relative;
-}
-
 @font-face {
   font-family: 'Brutalita';
   src: url('./fonts/Brutalita-Regular.woff2') format('woff2');
+  font-display: swap;
 }
 
 body {
@@ -109,10 +106,12 @@ body.-dragging::after {
 
 .inline {
   display: flex;
+  position: relative;
 }
 
 .padding {
   padding: 16px;
+  position: relative;
 }
 
 .label {
@@ -239,7 +238,7 @@ input[type='range'].toggle::-moz-range-thumb {
 .instructions {
   margin: 16px;
   line-height: 1.4;
-  color: #7f8c8d;
+  color: #555;
 }
 
 .instructions strong {
@@ -285,7 +284,7 @@ input[type='range'].toggle::-moz-range-thumb {
   margin-top: 32px;
 }
 
-.experimental--smoth-svg--container {
+.experimental--smooth-svg--container {
   display: none;
   padding-bottom: 64px;
 }

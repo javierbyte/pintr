@@ -1,203 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="shortcut icon" href="https://javier.xyz/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>PINTR - Create plotter-like line drawings from your images</title>
-    <meta property="og:title" content="PINTR" />
-    <meta name="twitter:title" content="PINTR" />
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ecf0f1" />
 
-    <meta name="twitter:card" content="summary_large_image" />
+  <title>PINTR - Create plotter-like line drawings from your images</title>
+  <meta property="og:title" content="PINTR - Create plotter-like line drawings from your images" />
+  <meta name="twitter:title" content="PINTR - Create plotter-like line drawings from your images" />
 
-    <meta
-      name="description"
-      content="Create plotter-like line drawings from your images."
-    />
-    <meta
-      property="og:description"
-      content="Create plotter-like line drawings from your images."
-    />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:type" content="website" />
 
-    <link rel="canonical" href="https://javier.xyz/pintr" />
-    <meta property="og:url" content="https://javier.xyz/pintr" />
+  <meta name="description" content="Create plotter-like line drawings from your images." />
+  <meta property="og:description" content="Create plotter-like line drawings from your images." />
+  <meta name="twitter:description" content="Create plotter-like line drawings from your images." />
 
-    <meta property="og:image:width" content="1600" />
-    <meta property="og:image:height" content="900" />
-    <meta property="og:image" content="https://javier.xyz/pintr/pintr.jpg" />
+  <link rel="canonical" href="https://javier.xyz/pintr" />
+  <meta property="og:url" content="https://javier.xyz/pintr" />
 
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="app">
-      <div class="flex">
-        <h1>PINTR</h1>
-        <input id="inputImageFile" type="file" />
-        <button id="inputImageButton" type="file">New image</button>
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="900" />
+  <meta property="og:image" content="https://javier.xyz/pintr/pintr.jpg" />
+  <meta name="twitter:image" content="https://javier.xyz/pintr/pintr.jpg" />
+
+  <link rel="preload" as="font" href="./fonts/Brutalita-Regular.woff2" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <noscript>PINTR requires JavaScript to run. Please enable JavaScript in your browser.</noscript>
+  <main class="app">
+    <div class="flex">
+      <h1>PINTR</h1>
+      <input id="inputImageFile" type="file" />
+      <button id="inputImageButton" type="button">New image</button>
+    </div>
+
+    <div class="inline">
+      <div class="padding">
+        <canvas id="draw" aria-label="Generated line drawing output"></canvas>
       </div>
 
-      <div class="inline">
-        <div class="padding">
-          <canvas id="draw"></canvas>
-        </div>
+      <div class="srcimage-container padding">
+        <div id="srcImg"></div>
+        <div class="label">Source</div>
+      </div>
+    </div>
 
-        <div class="srcimage-container padding">
-          <div id="srcImg"></div>
-          <div class="label">Source</div>
-        </div>
+    <canvas id="src" style="display: none"></canvas>
+
+    <div class="input-container">
+      <div class="input">
+        <label for="density">Density</label>
+        <input type="range" data-start-drawing id="density" min="0" max="100" value="50" />
       </div>
 
-      <canvas id="src" style="display: none"></canvas>
+      <div class="input">
+        <label for="contrast">Contrast</label>
+        <input type="range" data-start-drawing id="contrast" min="0" max="100" value="50" />
+      </div>
+
+      <div class="input">
+        <label for="definition">Definition</label>
+        <input type="range" data-start-drawing id="definition" min="0" max="100" value="50" />
+      </div>
+
+      <div class="input">
+        <label for="singleLine">Single Line</label>
+        <input type="range" data-start-drawing class="toggle" id="singleLine" min="0" max="1" value="1" />
+      </div>
+
+      <div class="input">
+        <label for="strokeWidth">Stroke width</label>
+        <input type="range" data-start-drawing id="strokeWidth" step="0.25" min="0.5" max="5" value="1.5" />
+      </div>
+    </div>
+
+    <div class="flex">
+      <button id="download">Download PNG</button>
+      <button id="downloadSvg">Download SVG</button>
+    </div>
+
+    <p class="instructions">
+      <strong>1.</strong>Select an image, images with a face, white or light
+      backgrounds and good contrast work better. <strong>2.</strong>Play with
+      the controls. <strong>3.</strong>Download. Your pictures never leave
+      your computer. More information and source available on
+      <a href="https://github.com/javierbyte/pintr">Github</a>.
+    </p>
+
+    <p class="instructions">
+      Created by
+      <a href="https://javier.xyz">javierbyte</a>. This site uses
+      <a href="https://brutalita.com">Brutalita Sans</a>. Follow me on
+      <a href="https://x.com/javierbyte">X</a> to stay updated.
+    </p>
+
+    <div class="experimental--smooth-svg">
+      <div class="instructions">Other Exports:</div>
 
       <div class="input-container">
         <div class="input">
-          <label for="density">Density</label>
-          <input
-            type="range"
-            data-start-drawing
-            id="density"
-            min="0"
-            max="100"
-            value="50"
-          />
-        </div>
-
-        <div class="input">
-          <label for="contrast">Contrast</label>
-          <input
-            type="range"
-            data-start-drawing
-            id="contrast"
-            min="0"
-            max="100"
-            value="50"
-          />
-        </div>
-
-        <div class="input">
-          <label for="definition">Definition</label>
-          <input
-            type="range"
-            data-start-drawing
-            id="definition"
-            min="0"
-            max="100"
-            value="50"
-          />
-        </div>
-
-        <div class="input">
-          <label for="singleLine">Single Line</label>
-          <input
-            type="range"
-            data-start-drawing
-            class="toggle"
-            id="singleLine"
-            min="0"
-            max="1"
-            value="1"
-          />
-        </div>
-
-        <div class="input">
-          <label for="strokeWidth">Stroke width</label>
-          <input
-            type="range"
-            data-start-drawing
-            id="strokeWidth"
-            step="0.25"
-            min="0.5"
-            max="5"
-            value="1.5"
-          />
+          <label for="makeSmoothSvg">Smooth SVG</label>
+          <input data-start-drawing type="range" class="toggle" id="makeSmoothSvg" min="0" max="1" value="0" />
         </div>
       </div>
 
-      <div class="flex">
-        <button id="download">Download PNG</button>
-        <button id="downloadSvg">Download SVG</button>
+      <div class="padding experimental--smooth-svg--container--warning" style="display: none">
+        Smooth SVG is only available for "single line" drawings.
       </div>
 
-      <div class="instructions">
-        <strong>1.</strong>Select an image, images with a face, white or light
-        backgrounds and good contrast work better. <strong>2.</strong>Play with
-        the controls. <strong>3.</strong>Download. Your pictures never leave
-        your computer. More information and source available on
-        <a href="https://github.com/javierbyte/pintr">Github</a>.
-      </div>
-
-      <div class="instructions">
-        Created by
-        <a href="https://javier.xyz">javierbyte</a>. This site uses
-        <a href="https://brutalita.com">Brutalita Sans</a>. Follow me on
-        <a href="https://x.com/javierbyte">X</a> to stay updated.
-      </div>
-
-      <div class="experimental--smooth-svg">
-        <div class="instructions">Other Exports:</div>
-
+      <div class="experimental--smooth-svg--container">
         <div class="input-container">
           <div class="input">
-            <label for="makeSmoothSvg">Smooth SVG</label>
-            <input
-              data-start-drawing
-              type="range"
-              class="toggle"
-              id="makeSmoothSvg"
-              min="0"
-              max="1"
-              value="0"
-            />
+            <label for="smoothingAmount">Smoothing Amount</label>
+            <input type="range" id="smoothingAmount" min="0" max="100" value="50" />
           </div>
         </div>
-
-        <div
-          class="padding experimental--smoth-svg--container--warning"
-          style="display: none"
-        >
-          Smooth SVG is only available for "single line" drawings.
+        <div class="padding">
+          <div class="label">Smooth SVG</div>
+          <div class="smooth-svg-container"></div>
         </div>
 
-        <div class="experimental--smoth-svg--container">
-          <div class="input-container">
-            <div class="input">
-              <label for="smoothingAmount">Smoothing Amount</label>
-              <input
-                type="range"
-                id="smoothingAmount"
-                min="0"
-                max="100"
-                value="50"
-              />
-            </div>
-          </div>
-          <div class="padding">
-            <div class="label">Smooth SVG</div>
-            <div class="smooth-svg-container"></div>
-          </div>
-
-          <button id="downloadSmoothSvg">Download SVG</button>
-        </div>
+        <button id="downloadSmoothSvg">Download SVG</button>
       </div>
-
-      <div class="loading"><span>Loading...</span></div>
     </div>
-    <script type="module" src="main.ts"></script>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-M2FT27FXS2"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
+    <div class="loading" role="status" aria-live="polite"><span>Loading...</span></div>
+  </main>
+  <script type="module" src="main.ts"></script>
 
-      gtag('config', 'G-M2FT27FXS2');
-    </script>
-  </body>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M2FT27FXS2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-M2FT27FXS2');
+  </script>
+</body>
+
 </html>

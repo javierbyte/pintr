@@ -11,7 +11,7 @@
     "deploy": "pnpm run build && gh-pages -d dist"
   },
   "devDependencies": {
-    "eslint": "^10.0.0",
+    "eslint": "^10.0.1",
     "gh-pages": "^6.3.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1"

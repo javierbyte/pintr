@@ -33,12 +33,11 @@ function generateSinglePolySvg(
 export function generateSvg(
   coords: [Coord, Coord][],
   options: {
-    singleLine: true | false;
+    singleLine: boolean;
     strokeWidth: number;
     size: [number, number];
   }
 ) {
-  console.warn('>generateSvg', options);
   if (options.singleLine) {
     return generateSinglePolySvg(coords, options);
   } else return generateMultiLineSvg(coords, options);
