@@ -6,6 +6,7 @@
   <link rel="shortcut icon" href="/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#ecf0f1" />
+  <meta name="author" content="javierbyte" />
 
   <title>PINTR - Create plotter-like line drawings from your images</title>
   <meta property="og:title" content="PINTR - Create plotter-like line drawings from your images" />
@@ -13,6 +14,8 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="PINTR" />
+  <meta property="og:locale" content="en_US" />
 
   <meta name="description" content="Create plotter-like line drawings from your images." />
   <meta property="og:description" content="Create plotter-like line drawings from your images." />
@@ -22,20 +25,51 @@
   <meta property="og:url" content="https://javier.xyz/pintr" />
 
   <meta property="og:image" content="https://javier.xyz/pintr/pintr.jpg" />
+  <meta property="og:image:alt" content="PINTR app generating a plotter-like line drawing from a photo" />
   <meta name="twitter:image" content="https://javier.xyz/pintr/pintr.jpg" />
+  <meta name="twitter:image:alt" content="PINTR app generating a plotter-like line drawing from a photo" />
+  <meta name="twitter:site" content="@javierbyte" />
+  <meta name="twitter:creator" content="@javierbyte" />
 
   <link rel="preload" as="font" href="./fonts/Brutalita-Regular.woff2" type="font/woff2" crossorigin />
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
   <link rel="stylesheet" href="style.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PINTR",
+    "url": "https://javier.xyz/pintr",
+    "description": "Create plotter-like line drawings from your images.",
+    "applicationCategory": "DesignApplication",
+    "operatingSystem": "Any",
+    "screenshot": "https://javier.xyz/pintr/pintr.jpg",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "javierbyte",
+      "url": "https://javier.xyz"
+    }
+  }
+  </script>
 </head>
 
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <noscript>PINTR requires JavaScript to run. Please enable JavaScript in your browser.</noscript>
-  <main class="app">
-    <div class="flex">
+  <main id="main" class="app">
+    <header class="flex">
       <h1>PINTR</h1>
-      <input id="inputImageFile" type="file" />
+      <p class="subtitle">Create plotter-like line drawings from your images</p>
+      <input id="inputImageFile" type="file" accept="image/*" aria-label="Upload an image" />
       <button id="inputImageButton" type="button">New image</button>
-    </div>
+    </header>
 
     <div class="inline">
       <div class="padding">
@@ -43,7 +77,7 @@
       </div>
 
       <div class="srcimage-container padding">
-        <div id="srcImg"></div>
+        <div id="srcImg" role="img" aria-label="Source image"></div>
         <div class="label">Source</div>
       </div>
     </div>
@@ -82,20 +116,21 @@
       <button id="downloadSvg">Download SVG</button>
     </div>
 
-    <p class="instructions">
-      <strong>1.</strong>Select an image, images with a face, white or light
-      backgrounds and good contrast work better. <strong>2.</strong>Play with
-      the controls. <strong>3.</strong>Download. Your pictures never leave
-      your computer. More information and source available on
-      <a href="https://github.com/javierbyte/pintr">Github</a>.
-    </p>
+    <section class="instructions" aria-label="How to use">
+      <ol>
+        <li>Select an image — images with a face, white or light backgrounds and good contrast work better.</li>
+        <li>Play with the controls.</li>
+        <li>Download. Your pictures never leave your computer.</li>
+      </ol>
+      <p>More information and source available on <a href="https://github.com/javierbyte/pintr">Github</a>.</p>
+    </section>
 
-    <p class="instructions">
+    <footer class="instructions">
       Created by
       <a href="https://javier.xyz">javierbyte</a>. This site uses
       <a href="https://brutalita.com">Brutalita Sans</a>. Follow me on
       <a href="https://x.com/javierbyte">X</a> to stay updated.
-    </p>
+    </footer>
 
     <div class="experimental--smooth-svg">
       <div class="instructions">Other Exports:</div>

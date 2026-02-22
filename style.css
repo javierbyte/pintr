@@ -10,6 +10,33 @@ body {
   padding: 0.25rem 0 1rem;
 }
 
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  padding: 8px 16px;
+  background: #000;
+  color: #fff;
+  z-index: 100;
+  border: none;
+  font-size: 1rem;
+}
+.skip-link:focus {
+  top: 8px;
+}
+
+.subtitle {
+  margin: 0 0 0 8px;
+  font-size: 0.65rem;
+  color: #555;
+  display: none;
+}
+
+a:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
 body,
 html,
 button {
@@ -223,7 +250,8 @@ input[type='range']::-webkit-slider-runnable-track {
   appearance: none;
 }
 input[type='range']:focus {
-  outline: none;
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
 }
 input[type='range'].toggle {
   width: 48px;
@@ -239,6 +267,16 @@ input[type='range'].toggle::-moz-range-thumb {
   margin: 16px;
   line-height: 1.4;
   color: #555;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-left: 0;
+  list-style-position: inside;
+}
+
+.instructions ol li {
+  margin-bottom: 4px;
 }
 
 .instructions strong {
@@ -287,4 +325,12 @@ input[type='range'].toggle::-moz-range-thumb {
 .experimental--smooth-svg--container {
   display: none;
   padding-bottom: 64px;
+}
+
+ul,
+ol,
+li,
+p {
+  margin: 0;
+  padding: 0;
 }
