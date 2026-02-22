@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Brutalita';
-  src: url('./fonts/Brutalita-Regular.woff2') format('woff2');
+  src: url('/fonts/Brutalita-Regular.woff2') format('woff2');
   font-display: swap;
 }
 
