@@ -264,7 +264,7 @@ input[type='range'].toggle::-moz-range-thumb {
 }
 
 .instructions {
-  margin: 16px;
+  padding: 16px;
   line-height: 1.4;
   color: #555;
 }
@@ -273,6 +273,7 @@ input[type='range'].toggle::-moz-range-thumb {
   margin: 0;
   padding-left: 0;
   list-style-position: inside;
+  padding-bottom: 16px;
 }
 
 .instructions ol li {
