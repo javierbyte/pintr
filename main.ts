@@ -75,11 +75,9 @@ async function main(imgSrc: string) {
   });
 
   const srcImgEl: HTMLImageElement | null = document.querySelector('#srcImg');
-  const loadingEl: HTMLElement | null = document.querySelector('.loading');
 
-  if (srcImgEl && loadingEl) {
+  if (srcImgEl) {
     srcImgEl.style.backgroundImage = `url("${imgSrc}")`;
-    loadingEl.style.display = 'none';
   }
   PINTR.render(CONFIG);
 }

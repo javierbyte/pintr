@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -37,36 +37,39 @@
   <link rel="stylesheet" href="style.css" />
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "PINTR",
-    "url": "https://javier.xyz/pintr",
-    "description": "Create plotter-like line drawings from your images.",
-    "applicationCategory": "DesignApplication",
-    "operatingSystem": "Any",
-    "screenshot": "https://javier.xyz/pintr/pintr.jpg",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "author": {
-      "@type": "Person",
-      "name": "javierbyte",
-      "url": "https://javier.xyz"
-    }
-  }
-  </script>
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PINTR",
+        "url": "https://javier.xyz/pintr",
+        "description": "Create plotter-like line drawings from your images.",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Any",
+        "screenshot": "https://javier.xyz/pintr/pintr.jpg",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "javierbyte",
+          "url": "https://javier.xyz"
+        }
+      }
+    </script>
 </head>
 
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
-  <noscript>PINTR requires JavaScript to run. Please enable JavaScript in your browser.</noscript>
+  <noscript>PINTR requires JavaScript to run. Please enable JavaScript in your
+    browser.</noscript>
   <main id="main" class="app">
     <header class="flex">
       <h1>PINTR</h1>
-      <p class="subtitle">Create plotter-like line drawings from your images</p>
+      <p class="subtitle">
+        Create plotter-like line drawings from your images
+      </p>
       <input id="inputImageFile" type="file" accept="image/*" aria-label="Upload an image" />
       <button id="inputImageButton" type="button">New image</button>
     </header>
@@ -118,11 +121,17 @@
 
     <section class="instructions" aria-label="How to use">
       <ol>
-        <li>Select an image — images with a face, white or light backgrounds and good contrast work better.</li>
+        <li>
+          Select an image — images with a face, white or light backgrounds and
+          good contrast work better.
+        </li>
         <li>Play with the controls.</li>
         <li>Download. Your pictures never leave your computer.</li>
       </ol>
-      <p>More information and source available on <a href="https://github.com/javierbyte/pintr">Github</a>.</p>
+      <p>
+        More information and source available on
+        <a href="https://github.com/javierbyte/pintr">Github</a>.
+      </p>
     </section>
 
     <footer class="instructions">
@@ -161,8 +170,6 @@
         <button id="downloadSmoothSvg">Download SVG</button>
       </div>
     </div>
-
-    <div class="loading" role="status" aria-live="polite"><span>Loading...</span></div>
   </main>
   <script type="module" src="main.ts"></script>
 
