@@ -156,7 +156,6 @@ canvas {
 
 canvas,
 .svg-container,
-.smooth-svg-container,
 #srcImg {
   width: var(--sizew);
   height: var(--sizeh);
@@ -178,8 +177,7 @@ canvas,
 }
 
 canvas,
-#src,
-.smooth-svg-container {
+#src {
   max-width: calc(100vw - 32px);
   height: auto;
 }
@@ -243,7 +241,7 @@ input[type='range']::-moz-range-thumb {
 input[type='range']::-webkit-slider-runnable-track {
   appearance: none;
 }
-input[type='range']:focus {
+input[type='range']:focus-visible {
   outline: 2px solid #3498db;
   outline-offset: 2px;
 }
@@ -295,13 +293,11 @@ input[type='range'].toggle::-moz-range-thumb {
   }
 }
 
-.experimental--smooth-svg {
-  margin-top: 32px;
-}
-
-.experimental--smooth-svg--container {
+.advanced-options--container {
   display: none;
-  padding-bottom: 64px;
+  border: 1px solid #000;
+  padding: 8px 16px;
+  margin: 16px;
 }
 
 ul,

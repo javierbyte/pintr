@@ -142,19 +142,47 @@ export default function Page() {
           <a href="https://x.com/javierbyte">X</a> to stay updated.
         </footer>
 
-        <div className="experimental--smooth-svg">
-          <div className="instructions">Other Exports:</div>
+        <div className="input-container">
+          <div className="input">
+            <label htmlFor="advancedOptions">Advanced options</label>
+            <input
+              data-start-drawing
+              type="range"
+              className="toggle"
+              id="advancedOptions"
+              min="0"
+              max="1"
+              defaultValue="0"
+            />
+          </div>
+        </div>
 
+        <div className="advanced-options--container">
           <div className="input-container">
             <div className="input">
-              <label htmlFor="makeSmoothSvg">Smooth SVG</label>
+              <label htmlFor="transparentBackground">
+                Transparent background
+              </label>
               <input
                 data-start-drawing
                 type="range"
                 className="toggle"
-                id="makeSmoothSvg"
+                id="transparentBackground"
                 min="0"
                 max="1"
+                defaultValue="1"
+              />
+            </div>
+          </div>
+
+          <div className="input-container">
+            <div className="input">
+              <label htmlFor="smoothingAmount">Smoothing</label>
+              <input
+                type="range"
+                id="smoothingAmount"
+                min="0"
+                max="100"
                 defaultValue="0"
               />
             </div>
@@ -164,28 +192,7 @@ export default function Page() {
             className="padding experimental--smooth-svg--container--warning"
             style={{ display: 'none' }}
           >
-            Smooth SVG is only available for &quot;single line&quot; drawings.
-          </div>
-
-          <div className="experimental--smooth-svg--container">
-            <div className="input-container">
-              <div className="input">
-                <label htmlFor="smoothingAmount">Smoothing Amount</label>
-                <input
-                  type="range"
-                  id="smoothingAmount"
-                  min="0"
-                  max="100"
-                  defaultValue="50"
-                />
-              </div>
-            </div>
-            <div className="padding">
-              <div className="label">Smooth SVG</div>
-              <div className="smooth-svg-container"></div>
-            </div>
-
-            <button id="downloadSmoothSvg">Download SVG</button>
+            Smoothing only applies to &quot;single line&quot; drawings.
           </div>
         </div>
       </main>

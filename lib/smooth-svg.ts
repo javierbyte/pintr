@@ -2,26 +2,20 @@ import type { Coord } from './PINTR';
 
 import { tweenValue } from './utils';
 
-export function generateSmoothSvg(
-  coords: [Coord, Coord][],
-  {
-    smoothingAmount = 50,
-    strokeWidth = 1,
-    size,
-  }: { smoothingAmount: number; strokeWidth?: number; size: [number, number] }
-) {
-  const points = coords.map((coord) => coord[0]);
+export type SmoothSegment = { cps: Coord; cpe: Coord; point: Coord };
 
+// Compute cubic-bezier control points that smooth a polyline through `points`.
+// Shared by the SVG export and the on-screen canvas render so both look identical.
+export function smoothControlPoints(
+  points: Coord[],
+  smoothingAmount = 50
+): SmoothSegment[] {
   const calculatedSmoothing = tweenValue(smoothingAmount, [
     [0, 0],
     [50, 0.1],
     [100, 1],
   ]);
 
-  // Properties of a line
-  // I:  - pointA (array) [x,y]: coordinates
-  //     - pointB (array) [x,y]: coordinates
-  // O:  - (object) { length: l, angle: a }: properties of the line
   const line = (pointA: Coord, pointB: Coord) => {
     const lengthX = pointB[0] - pointA[0];
     const lengthY = pointB[1] - pointA[1];
@@ -31,79 +25,67 @@ export function generateSmoothSvg(
     };
   };
 
-  // Position of a control point
-  // I:  - current (array) [x, y]: current point coordinates
-  //     - previous (array) [x, y]: previous point coordinates
-  //     - next (array) [x, y]: next point coordinates
-  //     - reverse (boolean, optional): sets the direction
-  // O:  - (array) [x,y]: a tuple of coordinates
+  // The control point position is relative to the current point.
   const controlPoint = (
     current: Coord,
     previous: Coord,
     next: Coord,
     reverse?: boolean
-  ) => {
-    // When 'current' is the first or last point of the array
-    // 'previous' or 'next' don't exist.
-    // Replace with 'current'
+  ): Coord => {
     const p = previous || current;
     const n = next || current;
-
-    // Properties of the opposed-line
     const o = line(p, n);
-
-    // If is end-control-point, add PI to the angle to go backward
-
     const angle = o.angle + (reverse ? Math.PI : 0);
     const length = o.length * calculatedSmoothing;
-
-    // The control point position is relative to the current point
-    const x = current[0] + Math.cos(angle) * length;
-    const y = current[1] + Math.sin(angle) * length;
-    return [x, y];
+    return [current[0] + Math.cos(angle) * length, current[1] + Math.sin(angle) * length];
   };
 
-  // Create the bezier curve command
-  // I:  - point (array) [x,y]: current point coordinates
-  //     - i (integer): index of 'point' in the array 'a'
-  //     - a (array): complete array of points coordinates
-  // O:  - (string) 'C x2,y2 x1,y1 x,y': SVG cubic bezier C command
-  const bezierCommand = (point: Coord, i: number, a: Coord[]) => {
-    // start control point
-    const cps = controlPoint(a[i - 1], a[i - 2], point);
+  const segments: SmoothSegment[] = [];
+  for (let i = 1; i < points.length; i++) {
+    const cps = controlPoint(points[i - 1], points[i - 2], points[i]);
+    const cpe = controlPoint(points[i], points[i - 1], points[i + 1], true);
+    segments.push({ cps, cpe, point: points[i] });
+  }
+  return segments;
+}
 
-    // end control point
-    const cpe = controlPoint(point, a[i - 1], a[i + 1], true);
-    return `C ${cps[0]},${cps[1]} ${cpe[0]},${cpe[1]} ${point[0]},${point[1]}`;
-  };
+export function generateSmoothSvg(
+  coords: [Coord, Coord][],
+  {
+    smoothingAmount = 50,
+    strokeWidth = 1,
+    size,
+    whiteBackground,
+  }: {
+    smoothingAmount: number;
+    strokeWidth?: number;
+    size: [number, number];
+    whiteBackground?: boolean;
+  }
+) {
+  const points = coords.map((coord) => coord[0]);
+  const segments = smoothControlPoints(points, smoothingAmount);
 
-  // Render the svg <path> element
-  // I:  - points (array): points coordinates
-  //     - command (function)
-  //       I:  - point (array) [x,y]: current point coordinates
-  //           - i (integer): index of 'point' in the array 'a'
-  //           - a (array): complete array of points coordinates
-  //       O:  - (string) a svg path command
-  // O:  - (string): a Svg <path> element
-  const svgPath = (
-    points: Coord[],
-    command: (point: Coord, i: number, a: Coord[]) => void
-  ) => {
-    // build the d attributes by looping over the points
-    const d = points.reduce(
-      (acc, point, i, a) =>
-        i === 0
-          ? `M ${point[0]},${point[1]}`
-          : `${acc} ${command(point, i, a)}`,
-      ''
-    );
-    return `<path d="${d}" fill="none" stroke="black" stroke-width="${strokeWidth}" />`;
-  };
+  const d = points.length
+    ? `M ${points[0][0]},${points[0][1]} ` +
+      segments
+        .map(
+          (s) =>
+            `C ${s.cps[0]},${s.cps[1]} ${s.cpe[0]},${s.cpe[1]} ${s.point[0]},${s.point[1]}`
+        )
+        .join(' ')
+    : '';
+
+  const path = `<path d="${d}" fill="none" stroke="black" stroke-width="${strokeWidth}" />`;
+
+  const background = whiteBackground
+    ? `<rect width="${size[0]}" height="${size[1]}" fill="#fff"/>\n    `
+    : '';
 
   return `<svg viewBox="0 0 ${size[0]} ${
     size[1]
   }" xmlns="http://www.w3.org/2000/svg" stroke="black">
-    ${svgPath(points, bezierCommand)}
+    ${background}${path}
   </svg>
   `;
 }

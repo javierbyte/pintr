@@ -27,7 +27,7 @@ export async function pinterCreator(
   }: {
     canvasDrawEl: HTMLCanvasElement;
     onDraw: ({ coords }: { coords: typeof COORDS }) => void;
-    onFinish: ({ coords }: { coords: typeof COORDS }) => void;
+    onFinish?: ({ coords }: { coords: typeof COORDS }) => void;
     onLoad: ({ width, height }: { width: number; height: number }) => void;
   }
 ) {

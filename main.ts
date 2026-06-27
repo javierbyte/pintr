@@ -1,7 +1,7 @@
 import { pinterCreator } from './lib/PINTR';
 
 import { generateSvg } from './lib/svg';
-import { generateSmoothSvg } from './lib/smooth-svg';
+import { renderCoordsToCanvas } from './lib/renderCoords';
 
 import { debounce } from './lib/utils';
 
@@ -11,10 +11,11 @@ export type configType = {
   contrast: number;
   definition: number;
   density: number;
-  makeSmoothSvg: boolean;
   singleLine: boolean;
   strokeWidth: number;
   smoothingAmount: number;
+  advancedOptions: boolean;
+  transparentBackground: boolean;
 };
 
 const DEFAULT_IMG = '/pintr/test.jpg';
@@ -23,10 +24,11 @@ let CONFIG: configType = {
   contrast: 50,
   definition: 50,
   density: 50,
-  makeSmoothSvg: false,
   singleLine: true,
   strokeWidth: 1,
-  smoothingAmount: 50,
+  smoothingAmount: 0,
+  advancedOptions: false,
+  transparentBackground: true,
 };
 
 let GLOBAL: {
@@ -60,17 +62,11 @@ async function main(imgSrc: string) {
       GLOBAL.height = height;
     },
     onFinish({ coords }) {
-      if (!CONFIG.makeSmoothSvg) return;
-
-      const smoothSvgData = generateSmoothSvg(coords, {
-        ...CONFIG,
-        size: [GLOBAL.width, GLOBAL.height],
-      });
-
-      const smoothSvgContainerEl = document.querySelector(
-        '.smooth-svg-container'
-      ) as HTMLElement;
-      smoothSvgContainerEl.innerHTML = smoothSvgData;
+      // The animation draws straight lines; once it finishes, redraw the canvas
+      // as a smooth curve so the smoothing slider is visible on screen.
+      if (!(CONFIG.smoothingAmount > 0 && CONFIG.singleLine)) return;
+      const ctx = canvasDrawEl.getContext('2d');
+      if (ctx) renderCoordsToCanvas(ctx, coords, CONFIG);
     },
   });
 
@@ -120,8 +116,9 @@ function startNewDrawing() {
   const contrast = getInputNumber('#contrast');
   const definition = getInputNumber('#definition');
   const strokeWidth = getInputNumber('#strokeWidth');
-  const makeSmoothSvg = getInputBoolean('#makeSmoothSvg');
   const smoothingAmount = getInputNumber('#smoothingAmount');
+  const advancedOptions = getInputBoolean('#advancedOptions');
+  const transparentBackground = getInputBoolean('#transparentBackground');
 
   CONFIG = {
     density,
@@ -129,21 +126,31 @@ function startNewDrawing() {
     contrast,
     definition,
     strokeWidth,
-    makeSmoothSvg,
     smoothingAmount,
+    advancedOptions,
+    transparentBackground,
   };
 
-  const smoothSvgContainerEl = document.querySelector(
-    '.experimental--smooth-svg--container'
+  const advancedOptionsContainerEl = document.querySelector(
+    '.advanced-options--container'
   ) as HTMLElement;
-  smoothSvgContainerEl.style.display = makeSmoothSvg ? 'block' : 'none';
+  advancedOptionsContainerEl.style.display = advancedOptions ? 'block' : 'none';
+
+  updateSmoothingWarning();
+
+  main(GLOBAL.currentImgSrc);
+}
+
+// Smoothing only applies to single-line drawings; warn when it won't take effect.
+function updateSmoothingWarning() {
+  const smoothingAmount = getInputNumber('#smoothingAmount');
+  const singleLine = getInputBoolean('#singleLine');
 
   const smoothSvgContainerWarningEl = document.querySelector(
     '.experimental--smooth-svg--container--warning'
   ) as HTMLElement;
-  smoothSvgContainerWarningEl.style.display = singleLine ? 'none' : 'block';
-
-  main(GLOBAL.currentImgSrc);
+  smoothSvgContainerWarningEl.style.display =
+    smoothingAmount > 0 && !singleLine ? 'block' : 'none';
 }
 
 let count = 0;
@@ -221,23 +228,34 @@ document.querySelectorAll('[data-start-drawing]').forEach((input) => {
   input.addEventListener('change', debounce(startNewDrawing, 32));
 });
 
+// Toggles are 0/1 range inputs; let a tap/click anywhere flip them instead of
+// requiring the user to drag the thumb to the other end.
+document
+  .querySelectorAll<HTMLInputElement>('input[type="range"].toggle')
+  .forEach((toggle) => {
+    toggle.addEventListener('pointerdown', (evt) => {
+      evt.preventDefault();
+      toggle.value = Number(toggle.value) ? '0' : '1';
+      toggle.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
+
 const smoothingAmountEl = document.querySelector(
   '#smoothingAmount'
 ) as HTMLInputElement;
 smoothingAmountEl.addEventListener(
-  'change',
+  'input',
   debounce(() => {
     CONFIG.smoothingAmount = getInputNumber('#smoothingAmount');
+    updateSmoothingWarning();
 
-    const smoothSvgData = generateSmoothSvg(GLOBAL.coords, {
-      ...CONFIG,
-      size: [GLOBAL.width, GLOBAL.height],
-    });
-    const smoothSvgContainerEl = document.querySelector(
-      '.smooth-svg-container'
-    ) as HTMLElement;
-    smoothSvgContainerEl.innerHTML = smoothSvgData;
-  }, 128)
+    // Redraw the existing drawing (smooth or straight) without regenerating lines.
+    const canvasDrawEl = document.querySelector(
+      'canvas#draw'
+    ) as HTMLCanvasElement;
+    const ctx = canvasDrawEl.getContext('2d');
+    if (ctx) renderCoordsToCanvas(ctx, GLOBAL.coords, CONFIG);
+  }, 64)
 );
 
 const downloadEl = document.querySelector('#download') as HTMLButtonElement;
@@ -248,7 +266,20 @@ downloadEl.addEventListener('click', () => {
   ) as HTMLCanvasElement;
 
   link.download = 'PINTR.png';
-  link.href = canvasDrawEl.toDataURL();
+
+  if (CONFIG.advancedOptions && !CONFIG.transparentBackground) {
+    const tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = canvasDrawEl.width;
+    tmpCanvas.height = canvasDrawEl.height;
+    const tmpCtx = tmpCanvas.getContext('2d') as CanvasRenderingContext2D;
+    tmpCtx.fillStyle = '#fff';
+    tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
+    tmpCtx.drawImage(canvasDrawEl, 0, 0);
+    link.href = tmpCanvas.toDataURL();
+  } else {
+    link.href = canvasDrawEl.toDataURL();
+  }
+
   link.click();
 });
 
@@ -261,27 +292,9 @@ downloadSvgEl.addEventListener('click', () => {
   const svgData = generateSvg(GLOBAL.coords, {
     ...CONFIG,
     size: [GLOBAL.width, GLOBAL.height],
+    whiteBackground: CONFIG.advancedOptions && !CONFIG.transparentBackground,
   });
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-  const svgUrl = URL.createObjectURL(svgBlob);
-  link.href = svgUrl;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(svgUrl), 1000);
-});
-
-const downloadSmoothSvgEl = document.querySelector(
-  '#downloadSmoothSvg'
-) as HTMLButtonElement;
-downloadSmoothSvgEl.addEventListener('click', () => {
-  const link = document.createElement('a');
-  link.download = 'PINTR.svg';
-  const smoothSvgData = generateSmoothSvg(GLOBAL.coords, {
-    ...CONFIG,
-    size: [GLOBAL.width, GLOBAL.height],
-  });
-  const svgBlob = new Blob([smoothSvgData], {
-    type: 'image/svg+xml;charset=utf-8',
-  });
   const svgUrl = URL.createObjectURL(svgBlob);
   link.href = svgUrl;
   link.click();
