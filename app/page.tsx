@@ -41,7 +41,10 @@ export default function Page() {
 
         <div className="inline">
           <div className="padding">
-            <canvas id="draw" aria-label="Generated line drawing output"></canvas>
+            <canvas
+              id="draw"
+              aria-label="Generated line drawing output"
+            ></canvas>
           </div>
 
           <div className="srcimage-container padding">
@@ -54,11 +57,11 @@ export default function Page() {
 
         <div className="input-container">
           <div className="input">
-            <label htmlFor="density">Density</label>
+            <label htmlFor="lines">Lines</label>
             <input
               type="range"
               data-start-drawing
-              id="density"
+              id="lines"
               min="0"
               max="100"
               defaultValue="50"
@@ -124,8 +127,8 @@ export default function Page() {
         <section className="instructions" aria-label="How to use">
           <ol>
             <li>
-              Select an image — images with a face, white or light backgrounds and
-              good contrast work better.
+              Select an image — images with a face, white or light backgrounds
+              and good contrast work better.
             </li>
             <li>Play with the controls.</li>
             <li>Download. Your pictures never leave your computer.</li>

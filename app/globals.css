@@ -1,7 +1,7 @@
 body {
   touch-action: pan-y;
   margin: 0;
-  padding: 0.25rem 0 1rem;
+  padding: 0.25rem 0 2rem;
 }
 
 .skip-link {
@@ -296,7 +296,7 @@ input[type='range'].toggle::-moz-range-thumb {
 .advanced-options--container {
   display: none;
   border: 1px solid #000;
-  padding: 8px 16px;
+  padding: 10px 8px;
   margin: 16px;
 }
 

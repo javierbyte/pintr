@@ -26,6 +26,33 @@ export function debounce<F extends (...params: any[]) => void>(
   } as F;
 }
 
+// Like debounce, but fires at most once per `interval` *while* events keep
+// arriving — debounce postpones forever during a continuous drag and only runs
+// once you pause/release. Leading + trailing edge so the first and final values
+// always land.
+export function throttle<F extends (...params: any[]) => void>(
+  fn: F,
+  interval: number
+) {
+  let lastRun = 0;
+  let timeoutID: number = 0;
+  return function (this: any, ...args: any[]) {
+    const remaining = interval - (Date.now() - lastRun);
+    if (remaining <= 0) {
+      clearTimeout(timeoutID);
+      timeoutID = 0;
+      lastRun = Date.now();
+      fn.apply(this, args);
+    } else if (!timeoutID) {
+      timeoutID = window.setTimeout(() => {
+        lastRun = Date.now();
+        timeoutID = 0;
+        fn.apply(this, args);
+      }, remaining);
+    }
+  } as F;
+}
+
 export function tweenValue(value: number, tweens: [number, number][]): number {
   const sortedTweens = [...tweens];
   sortedTweens.sort((a, b) => a[0] - b[0]);

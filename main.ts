@@ -3,14 +3,14 @@ import { pinterCreator } from './lib/PINTR';
 import { generateSvg } from './lib/svg';
 import { renderCoordsToCanvas } from './lib/renderCoords';
 
-import { debounce } from './lib/utils';
+import { clamp, debounce, throttle } from './lib/utils';
 
 import type { Coord } from './lib/PINTR';
 
 export type configType = {
   contrast: number;
   definition: number;
-  density: number;
+  lines: number;
   singleLine: boolean;
   strokeWidth: number;
   smoothingAmount: number;
@@ -23,7 +23,7 @@ const DEFAULT_IMG = '/pintr/test.jpg';
 let CONFIG: configType = {
   contrast: 50,
   definition: 50,
-  density: 50,
+  lines: 50,
   singleLine: true,
   strokeWidth: 1,
   smoothingAmount: 0,
@@ -33,49 +33,161 @@ let CONFIG: configType = {
 
 let GLOBAL: {
   currentImgSrc: string;
+  // `buffer` holds every line ever drawn for the current image + generation
+  // config (the maximum extent). `coords` is the subset currently shown/exported
+  // — lowering the line count just trims `coords` from `buffer` without recomputing.
   coords: [Coord, Coord][];
+  buffer: [Coord, Coord][];
+  displayedCount: number;
   width: number;
   height: number;
+  // Bumped on every new image so a superseded instance's late callbacks are ignored.
+  drawToken: number;
 } = {
   currentImgSrc: DEFAULT_IMG,
   coords: [],
+  buffer: [],
+  displayedCount: 0,
   width: 512,
   height: 512,
+  drawToken: 0,
 };
 
-async function main(imgSrc: string) {
+// The single PINTR instance for the current image. Generation-param changes
+// reuse it via start(); only a new image creates a fresh one.
+let PINTR: Awaited<ReturnType<typeof pinterCreator>> | null = null;
+
+function getDrawCtx(): CanvasRenderingContext2D | null {
+  const canvasDrawEl = document.querySelector(
+    'canvas#draw'
+  ) as HTMLCanvasElement | null;
+  return canvasDrawEl ? canvasDrawEl.getContext('2d') : null;
+}
+
+// The Lines slider (0-100) maps directly to a target line count via a power
+// curve — no image-lightness or stroke-width scaling, so the slider value alone
+// decides how many lines are drawn. Left end is exactly LINES_MIN, right end is
+// LINES_MAX, and LINES_POWER bends the curve (1 = linear, higher = slow start /
+// steep finish). Tune these three knobs to taste.
+const LINES_MIN = 3;
+const LINES_MAX = 10000;
+const LINES_POWER = 2;
+
+function desiredLineCount(): number {
+  if (!PINTR) return 0;
+  const t = clamp(CONFIG.lines, 0, 100) / 100;
+  return Math.round(
+    LINES_MIN + (LINES_MAX - LINES_MIN) * Math.pow(t, LINES_POWER)
+  );
+}
+
+// Repaint the canvas and update the exported coords from the first `count`
+// buffered lines, honouring the current smoothing config (these are "settled"
+// displayed lines, not a live in-progress draw).
+function showFromBuffer(count: number) {
+  GLOBAL.coords = GLOBAL.buffer.slice(0, count);
+  const ctx = getDrawCtx();
+  if (ctx) renderCoordsToCanvas(ctx, GLOBAL.coords, CONFIG);
+}
+
+// Fresh drawing: reset the buffer and (re)start PINTR with the current
+// generation config, then request the slider-derived line count.
+function restartDrawing() {
+  if (!PINTR) return;
+  GLOBAL.buffer = [];
+  GLOBAL.coords = [];
+  const desired = desiredLineCount();
+  GLOBAL.displayedCount = desired;
+  PINTR.start({
+    contrast: CONFIG.contrast,
+    definition: CONFIG.definition,
+    singleLine: CONFIG.singleLine,
+    strokeWidth: CONFIG.strokeWidth,
+  });
+  PINTR.requestLines(desired);
+}
+
+// Lines-only change: never regenerates. If we already have enough lines just
+// show the right subset; otherwise repaint the full buffer and ask PINTR to
+// continue drawing more on top.
+function applyLines() {
+  if (!PINTR) return;
+  const desired = desiredLineCount();
+  GLOBAL.displayedCount = desired;
+
+  if (desired <= GLOBAL.buffer.length) {
+    // Enough already drawn — lower/keep the target (halts any in-flight
+    // extension) and show the subset.
+    PINTR.requestLines(desired);
+    showFromBuffer(desired);
+  } else {
+    // Need more. Repaint the full buffer as straight lines so the strokes PINTR
+    // is about to append line up with what's on screen, then request more; the
+    // onProgress handler reveals them as they're drawn.
+    GLOBAL.coords = GLOBAL.buffer.slice();
+    const ctx = getDrawCtx();
+    if (ctx)
+      renderCoordsToCanvas(ctx, GLOBAL.buffer, {
+        ...CONFIG,
+        smoothingAmount: 0,
+      });
+    PINTR.requestLines(desired);
+  }
+}
+
+// Create a PINTR instance for a new image and kick off the first drawing.
+async function loadImage(imgSrc: string) {
+  const myToken = ++GLOBAL.drawToken;
+
+  // Stop the previous instance so it doesn't keep drawing to the shared canvas.
+  if (PINTR) PINTR.stop();
+  PINTR = null;
+
   const canvasDrawEl: HTMLCanvasElement | null =
     document.querySelector('canvas#draw');
   if (!canvasDrawEl) {
     throw new Error();
   }
-  const PINTR = await pinterCreator(imgSrc, {
+
+  const instance = await pinterCreator(imgSrc, {
     canvasDrawEl,
-    onDraw({ coords }) {
-      GLOBAL.coords = coords;
-    },
     onLoad({ width, height }) {
+      if (myToken !== GLOBAL.drawToken) return;
       document.documentElement.style.setProperty('--sizew', `${width / 2}px`);
       document.documentElement.style.setProperty('--sizeh', `${height / 2}px`);
 
       GLOBAL.width = width;
       GLOBAL.height = height;
     },
-    onFinish({ coords }) {
-      // The animation draws straight lines; once it finishes, redraw the canvas
-      // as a smooth curve so the smoothing slider is visible on screen.
-      if (!(CONFIG.smoothingAmount > 0 && CONFIG.singleLine)) return;
-      const ctx = canvasDrawEl.getContext('2d');
-      if (ctx) renderCoordsToCanvas(ctx, coords, CONFIG);
+    onProgress({ coords, done }) {
+      if (myToken !== GLOBAL.drawToken) return;
+      GLOBAL.buffer.push(...coords);
+      // Reveal up to the user's current desired count.
+      const shown = Math.min(GLOBAL.buffer.length, GLOBAL.displayedCount);
+      GLOBAL.coords = GLOBAL.buffer.slice(0, shown);
+
+      // The live draw is straight lines; once it reaches the target, redraw as a
+      // smooth curve so the smoothing slider is visible on screen.
+      if (done && CONFIG.smoothingAmount > 0 && CONFIG.singleLine) {
+        const ctx = canvasDrawEl.getContext('2d');
+        if (ctx) renderCoordsToCanvas(ctx, GLOBAL.coords, CONFIG);
+      }
     },
   });
 
-  const srcImgEl: HTMLImageElement | null = document.querySelector('#srcImg');
+  // A newer image started while this one was loading — discard it.
+  if (myToken !== GLOBAL.drawToken) {
+    instance.stop();
+    return;
+  }
+  PINTR = instance;
 
+  const srcImgEl: HTMLImageElement | null = document.querySelector('#srcImg');
   if (srcImgEl) {
     srcImgEl.style.backgroundImage = `url("${imgSrc}")`;
   }
-  PINTR.render(CONFIG);
+
+  restartDrawing();
 }
 
 function readFile(evt: Event) {
@@ -93,7 +205,7 @@ function readFile(evt: Event) {
     FR.addEventListener('load', function (e) {
       if (!e || !e.target) return;
       GLOBAL.currentImgSrc = String(e.target.result);
-      main(String(e.target.result));
+      loadImage(String(e.target.result));
     });
 
     FR.readAsDataURL(file);
@@ -110,35 +222,46 @@ function getInputBoolean(selector: string): boolean {
   return inputEl ? Boolean(Number(inputEl.value)) : false;
 }
 
-function startNewDrawing() {
-  const density = getInputNumber('#density');
-  const singleLine = getInputBoolean('#singleLine');
-  const contrast = getInputNumber('#contrast');
-  const definition = getInputNumber('#definition');
-  const strokeWidth = getInputNumber('#strokeWidth');
-  const smoothingAmount = getInputNumber('#smoothingAmount');
-  const advancedOptions = getInputBoolean('#advancedOptions');
-  const transparentBackground = getInputBoolean('#transparentBackground');
-
-  CONFIG = {
-    density,
-    singleLine,
-    contrast,
-    definition,
-    strokeWidth,
-    smoothingAmount,
-    advancedOptions,
-    transparentBackground,
+function readConfigFromInputs(): configType {
+  return {
+    lines: getInputNumber('#lines'),
+    singleLine: getInputBoolean('#singleLine'),
+    contrast: getInputNumber('#contrast'),
+    definition: getInputNumber('#definition'),
+    strokeWidth: getInputNumber('#strokeWidth'),
+    smoothingAmount: getInputNumber('#smoothingAmount'),
+    advancedOptions: getInputBoolean('#advancedOptions'),
+    transparentBackground: getInputBoolean('#transparentBackground'),
   };
+}
+
+// A control changed. Generation params (definition/contrast/single line/stroke
+// width) restart the drawing; lines is incremental; the rest are UI/export
+// only and need no redraw.
+function onControlChange() {
+  const prev = CONFIG;
+  CONFIG = readConfigFromInputs();
 
   const advancedOptionsContainerEl = document.querySelector(
     '.advanced-options--container'
   ) as HTMLElement;
-  advancedOptionsContainerEl.style.display = advancedOptions ? 'block' : 'none';
+  advancedOptionsContainerEl.style.display = CONFIG.advancedOptions
+    ? 'block'
+    : 'none';
 
   updateSmoothingWarning();
 
-  main(GLOBAL.currentImgSrc);
+  const generationChanged =
+    CONFIG.definition !== prev.definition ||
+    CONFIG.contrast !== prev.contrast ||
+    CONFIG.singleLine !== prev.singleLine ||
+    CONFIG.strokeWidth !== prev.strokeWidth;
+
+  if (generationChanged) {
+    restartDrawing();
+  } else if (CONFIG.lines !== prev.lines) {
+    applyLines();
+  }
 }
 
 // Smoothing only applies to single-line drawings; warn when it won't take effect.
@@ -169,7 +292,7 @@ function onDrop(ev: DragEvent) {
     }
 
     GLOBAL.currentImgSrc = String(e.target.result);
-    main(String(e.target.result));
+    loadImage(String(e.target.result));
     document.body.classList.remove('-dragging');
     count = 0;
   });
@@ -224,9 +347,25 @@ inputImageButtonEl.addEventListener('click', () => {
   inputImageFileEl.click();
 });
 
-document.querySelectorAll('[data-start-drawing]').forEach((input) => {
-  input.addEventListener('change', debounce(startNewDrawing, 32));
-});
+// React to each control as fast as it's cheap to. Lines only trims or extends
+// the already-computed line buffer, so it's effectively free: track the slider
+// live (`input`) with a tiny throttle. Contrast/definition regenerate the whole
+// drawing, so they react only on release (`change`) with a heavier throttle;
+// everything else keeps the default.
+const HEAVY_CONTROLS = new Set(['contrast', 'definition']);
+
+document
+  .querySelectorAll<HTMLInputElement>('[data-start-drawing]')
+  .forEach((input) => {
+    if (input.id === 'lines') {
+      // Throttle (not debounce) so it tracks the slider live during the drag
+      // instead of only firing on release.
+      input.addEventListener('input', throttle(onControlChange, 16));
+    } else {
+      const delay = HEAVY_CONTROLS.has(input.id) ? 120 : 32;
+      input.addEventListener('change', debounce(onControlChange, delay));
+    }
+  });
 
 // Toggles are 0/1 range inputs; let a tap/click anywhere flip them instead of
 // requiring the user to drag the thumb to the other end.
@@ -245,7 +384,7 @@ const smoothingAmountEl = document.querySelector(
 ) as HTMLInputElement;
 smoothingAmountEl.addEventListener(
   'input',
-  debounce(() => {
+  throttle(() => {
     CONFIG.smoothingAmount = getInputNumber('#smoothingAmount');
     updateSmoothingWarning();
 
@@ -255,7 +394,7 @@ smoothingAmountEl.addEventListener(
     ) as HTMLCanvasElement;
     const ctx = canvasDrawEl.getContext('2d');
     if (ctx) renderCoordsToCanvas(ctx, GLOBAL.coords, CONFIG);
-  }, 64)
+  }, 32)
 );
 
 const downloadEl = document.querySelector('#download') as HTMLButtonElement;
@@ -301,4 +440,11 @@ downloadSvgEl.addEventListener('click', () => {
   setTimeout(() => URL.revokeObjectURL(svgUrl), 1000);
 });
 
-startNewDrawing();
+// Initial bootstrap: sync CONFIG/UI from the inputs' default values, then load
+// the default image and start drawing.
+CONFIG = readConfigFromInputs();
+(
+  document.querySelector('.advanced-options--container') as HTMLElement
+).style.display = CONFIG.advancedOptions ? 'block' : 'none';
+updateSmoothingWarning();
+loadImage(GLOBAL.currentImgSrc);
