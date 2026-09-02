@@ -6,6 +6,10 @@ illustrations from your pictures.
 All the processing is made locally, your images never leave your computer and
 you are free to use them as you please.
 
+The platform-neutral, resumable generator is documented in
+[PINTR core](lib/pintr-core/README.md). It is currently a local module; this
+refactor does not create or publish a package.
+
 [![pintr](public/thumbnail.jpg)](https://javier.xyz/pintr/)
 
 ## Examples

@@ -1,14 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import localFont from 'next/font/local';
-import { GoogleAnalytics } from '@next/third-parties/google';
 
 import './globals.css';
-
-const brutalita = localFont({
-  src: '../public/fonts/Brutalita-Regular.woff2',
-  display: 'swap',
-  variable: '--font-brutalita',
-});
 
 const TITLE = 'PINTR - Create plotter-like line drawings from your images';
 const DESCRIPTION = 'Create plotter-like line drawings from your images.';
@@ -60,9 +52,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={brutalita.variable}>
+    <html lang="en">
       <body>{children}</body>
-      <GoogleAnalytics gaId="G-M2FT27FXS2" />
     </html>
   );
 }

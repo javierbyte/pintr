@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'Brutalita';
+  src: url('https://brutalita.com/font/Brutalita-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Brutalita';
+  src: url('https://brutalita.com/font/Brutalita-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+
 body {
   touch-action: pan-y;
   margin: 0;
@@ -34,8 +48,8 @@ a:focus {
 body,
 html,
 button {
-  font-family: var(--font-brutalita), Courier, monospace, sans-serif;
-  letter-spacing: -1px;
+  font-family: 'Brutalita', Courier, monospace, sans-serif;
+  letter-spacing: var(--letter-spacing);
   font-weight: 400;
   font-style: normal;
   font-size: 24px;
@@ -71,13 +85,15 @@ button {
   appearance: none;
   -webkit-appearance: none;
   margin: 8px 16px;
-  padding: 8px 16px;
+  padding: 10px 16px 8px;
   border: 3px solid #000;
   display: block;
   background: #ecf0f1;
   white-space: nowrap;
   color: #000;
-  font-size: 1rem;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-small);
+  letter-spacing: var(--letter-spacing-small);
 }
 button:hover {
   cursor: pointer;
@@ -123,6 +139,16 @@ body.-dragging::after {
 :root {
   --sizeh: calc(1080px / 2);
   --sizew: calc(1080px / 2);
+
+  /* normal text */
+  --font-size: 1rem;
+  --font-weight: 400;
+  --letter-spacing: -1%;
+
+  /* small text: 4/5 of normal, medium weight */
+  --font-size-small: 0.88rem;
+  --font-weight-small: 500;
+  --letter-spacing-small: normal;
 }
 
 .inline {
@@ -174,6 +200,9 @@ canvas,
 #srcImg {
   max-width: calc(100vw - 32px);
   max-height: calc(100vw - 32px);
+  /* The box follows the inline aspect-ratio of whichever image is shown, which
+     is not the drawing's once an aspect ratio is picked. */
+  height: auto;
 }
 
 canvas,
@@ -245,6 +274,35 @@ input[type='range']:focus-visible {
   outline: 2px solid #3498db;
   outline-offset: 2px;
 }
+select {
+  margin-left: 8px;
+  flex: 1;
+  width: 180px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #95a5a6;
+  /* `appearance: none` drops the native dropdown marker, so draw one back: a
+     solid black triangle, matching the square slider thumbs. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%23000'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 10px 6px;
+  color: #000;
+  border: none;
+  border-radius: 0;
+  height: 32px;
+  padding: 0 26px 0 8px;
+  font: inherit;
+  font-size: var(--font-size-small);
+}
+select:hover {
+  cursor: pointer;
+}
+select:focus-visible {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
 input[type='range'].toggle {
   width: 48px;
 }
@@ -300,10 +358,117 @@ input[type='range'].toggle::-moz-range-thumb {
   margin: 16px;
 }
 
+.vignette-options--container {
+  display: none;
+}
+
+/* An open folder: the toggle row is the tab and the panel below is the sheet
+   hanging off it, both tinted a step darker than the page and outlined with
+   inset shadows rather than borders. The tab is pulled down over the sheet's
+   top line by a negative bottom margin, so nothing inside the tab's own box
+   moves and its label sits exactly where it does when the folder is closed. */
+.folder.-open {
+  --folder-tint: #dfe4e6;
+}
+
+.folder.-open > .folder--tab {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  margin-bottom: -1px;
+  background: var(--folder-tint);
+  /* left + top, then right — no bottom, so the tab opens into the sheet. */
+  box-shadow:
+    inset 1px 1px #000,
+    inset -1px 0 #000;
+}
+
+.folder.-open > .folder--sheet {
+  background: var(--folder-tint);
+  box-shadow:
+    inset 1px 1px #000,
+    inset -1px -1px #000;
+}
+
+.srcimage-container {
+  cursor: pointer;
+}
+
 ul,
 ol,
 li,
 p {
   margin: 0;
   padding: 0;
+}
+
+html {
+  color-scheme: light;
+}
+
+.doc-header h1 {
+  line-height: 1.2;
+  padding: 8px 0;
+}
+.doc-header .doc-back {
+  margin: 0 0 0 16px;
+  font-size: 0.7rem;
+}
+
+.doc {
+  max-width: 42rem;
+  padding: 0 16px 32px;
+  line-height: 1.5;
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+.doc h2 {
+  font-weight: 400;
+  font-size: 1rem;
+  margin: 32px 0 8px;
+}
+.doc h3 {
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: #34495e;
+  margin: 24px 0 4px;
+}
+.doc p,
+.doc ul,
+.doc ol {
+  margin: 0 0 12px;
+}
+.doc ul,
+.doc ol {
+  padding-left: 1.4em;
+  list-style-position: outside;
+}
+.doc li {
+  margin-bottom: 4px;
+}
+.doc strong {
+  color: #34495e;
+}
+.doc .meta {
+  color: #555;
+  font-size: 0.7rem;
+}
+
+/* A control whose option has nothing to act on yet — the extend toggle with no
+   padding and no aspect ratio change. */
+.input-container.-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.input-container.-disabled input[type='range'] {
+  pointer-events: none;
+}
+
+/* Explains a download's format next to its button, in the muted register the
+   instructions use. */
+.export-note {
+  margin: 8px 16px 8px 0;
+  color: #555;
+  line-height: 1.4;
 }

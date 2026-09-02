@@ -22,7 +22,7 @@ function generateMultiLineSvg(
 ) {
   return `<svg viewBox="0 0 ${size[0]} ${
     size[1]
-  }" xmlns="http://www.w3.org/2000/svg" stroke="black" stroke-width="${strokeWidth}">
+  }" xmlns="http://www.w3.org/2000/svg" stroke="black" stroke-width="${strokeWidth}" stroke-linejoin="round">
 ${backgroundRect(size, whiteBackground)}${coords
     .map((coord) => {
       return `<line x1="${coord[0][0]}" y1="${coord[0][1]}" x2="${coord[1][0]}" y2="${coord[1][1]}"/>`;
@@ -46,7 +46,7 @@ function generateSinglePolySvg(
 ) {
   return `<svg viewBox="0 0 ${size[0]} ${
     size[1]
-  }" xmlns="http://www.w3.org/2000/svg">
+  }" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
   ${backgroundRect(size, whiteBackground)}<polyline points="${coords
     .map((coordPair) => coordPair[0].join(','))
     .join(' ')}" fill="none" stroke="black" stroke-width="${strokeWidth}"/>

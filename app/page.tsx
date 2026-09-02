@@ -1,16 +1,27 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+import { GoogleAnalytics } from '@next/third-parties/google';
+
+import SiteFooter from './site-footer';
 
 export default function Page() {
-  const started = useRef(false);
-
   useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-    // The DOM is now mounted, so main.ts's top-level querySelector/listener
-    // wiring (and final startNewDrawing()) runs against the rendered elements.
-    import('../main');
+    let disposed = false;
+    let cleanup: (() => void) | undefined;
+
+    // Initialize after React has mounted the DOM. The module itself is cached by
+    // Next.js, so setup must run on every mount (including client-side back
+    // navigation from Privacy or Support).
+    import('../main').then(({ initializePintrApp }) => {
+      if (disposed) return;
+      cleanup = initializePintrApp();
+    });
+
+    return () => {
+      disposed = true;
+      cleanup?.();
+    };
   }, []);
 
   return (
@@ -62,9 +73,10 @@ export default function Page() {
               type="range"
               data-start-drawing
               id="lines"
+              step="1"
               min="0"
               max="100"
-              defaultValue="50"
+              defaultValue="35"
             />
           </div>
 
@@ -74,6 +86,7 @@ export default function Page() {
               type="range"
               data-start-drawing
               id="contrast"
+              step="10"
               min="0"
               max="100"
               defaultValue="50"
@@ -86,9 +99,10 @@ export default function Page() {
               type="range"
               data-start-drawing
               id="definition"
+              step="10"
               min="0"
               max="100"
-              defaultValue="50"
+              defaultValue="55"
             />
           </div>
 
@@ -111,17 +125,198 @@ export default function Page() {
               type="range"
               data-start-drawing
               id="strokeWidth"
-              step="0.25"
-              min="0.5"
-              max="5"
-              defaultValue="1.5"
+              step="1"
+              min="0"
+              max="100"
+              defaultValue="40"
             />
+          </div>
+
+          <div className="input">
+            <label htmlFor="advancedOptions">Advanced</label>
+            <input
+              data-start-drawing
+              type="range"
+              className="toggle"
+              id="advancedOptions"
+              min="0"
+              max="1"
+              defaultValue="0"
+            />
+          </div>
+        </div>
+
+        <div className="advanced-options--container">
+          <div className="input-container">
+            <div className="input">
+              <label htmlFor="aspectRatio">Aspect ratio</label>
+              <select id="aspectRatio" data-start-drawing defaultValue="">
+                <option value="">Original</option>
+                <optgroup label="Ratio">
+                  <option value="1:1">1:1</option>
+                  <option value="4:5">4:5</option>
+                  <option value="5:4">5:4</option>
+                  <option value="2:3">2:3</option>
+                  <option value="3:2">3:2</option>
+                  <option value="3:4">3:4</option>
+                  <option value="4:3">4:3</option>
+                  <option value="9:16">9:16</option>
+                  <option value="16:9">16:9</option>
+                </optgroup>
+                <optgroup label="Paper">
+                  {/* Every A size is the same 1:sqrt(2) ratio, so one entry per
+                      orientation covers A2 through A6. */}
+                  <option value="210:297">A4 / A3 (portrait)</option>
+                  <option value="297:210">A4 / A3 (landscape)</option>
+                  <option value="8.5:11">Letter (portrait)</option>
+                  <option value="11:8.5">Letter (landscape)</option>
+                  <option value="8.5:14">Legal (portrait)</option>
+                  <option value="14:8.5">Legal (landscape)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+
+          <div className="input-container">
+            <div className="input">
+              <label htmlFor="padding">Padding</label>
+              <input
+                type="range"
+                data-start-drawing
+                id="padding"
+                min="0"
+                max="25"
+                defaultValue="0"
+              />
+            </div>
+          </div>
+
+          <div className="input-container extend-image--container">
+            <div className="input">
+              <label htmlFor="extendImage">Extend original image</label>
+              <input
+                data-start-drawing
+                type="range"
+                className="toggle"
+                id="extendImage"
+                min="0"
+                max="1"
+                defaultValue="0"
+              />
+            </div>
+          </div>
+
+          <div className="folder">
+            <div className="input-container folder--tab">
+              <div className="input">
+                <label htmlFor="vignette">Vignette</label>
+                <input
+                  data-start-drawing
+                  type="range"
+                  className="toggle"
+                  id="vignette"
+                  min="0"
+                  max="1"
+                  defaultValue="0"
+                />
+              </div>
+            </div>
+
+            <div className="vignette-options--container folder--sheet">
+              <div className="input-container">
+                <div className="input">
+                  <label htmlFor="vignetteDistance">Vignette distance</label>
+                  <input
+                    type="range"
+                    data-start-drawing
+                    id="vignetteDistance"
+                    min="0"
+                    max="100"
+                    defaultValue="50"
+                  />
+                </div>
+              </div>
+
+              <div className="input-container">
+                <div className="input">
+                  <label htmlFor="vignetteHardness">Vignette hardness</label>
+                  <input
+                    type="range"
+                    data-start-drawing
+                    id="vignetteHardness"
+                    min="0"
+                    max="100"
+                    defaultValue="50"
+                  />
+                </div>
+              </div>
+
+              <div className="input-container">
+                <div className="input">
+                  <label htmlFor="vignetteSquare">Vignette square</label>
+                  <input
+                    data-start-drawing
+                    type="range"
+                    className="toggle"
+                    id="vignetteSquare"
+                    min="0"
+                    max="1"
+                    defaultValue="0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="input-container">
+            <div className="input">
+              <label htmlFor="smoothingAmount">Smoothing</label>
+              <input
+                data-start-drawing
+                type="range"
+                id="smoothingAmount"
+                min="0"
+                max="100"
+                defaultValue="0"
+              />
+            </div>
+          </div>
+
+          <div
+            className="padding experimental--smooth-svg--container--warning"
+            style={{ display: 'none' }}
+          >
+            Smoothing only applies to &quot;single line&quot; drawings.
+          </div>
+
+          <div className="flex">
+            <button id="downloadTxt">Download TXT</button>
+            <p className="export-note">
+              x,y rows &middot; <span id="coordsSize">&hellip;</span> &middot;
+              origin top left
+            </p>
           </div>
         </div>
 
         <div className="flex">
           <button id="download">Download PNG</button>
           <button id="downloadSvg">Download SVG</button>
+
+          {/* Only affects the downloads, so it lives with the download buttons. */}
+          <div className="input">
+            <label htmlFor="transparentBackground">
+              Transparent background
+            </label>
+            <input
+              data-start-drawing
+              type="range"
+              className="toggle"
+              id="transparentBackground"
+              min="0"
+              max="1"
+              defaultValue="1"
+            />
+          </div>
         </div>
 
         <section className="instructions" aria-label="How to use">
@@ -139,66 +334,9 @@ export default function Page() {
           </p>
         </section>
 
-        <footer className="instructions">
-          Created by <a href="https://javier.xyz">javierbyte</a>. This site uses{' '}
-          <a href="https://brutalita.com">Brutalita Sans</a>. Follow me on{' '}
-          <a href="https://x.com/javierbyte">X</a> to stay updated.
-        </footer>
-
-        <div className="input-container">
-          <div className="input">
-            <label htmlFor="advancedOptions">Advanced options</label>
-            <input
-              data-start-drawing
-              type="range"
-              className="toggle"
-              id="advancedOptions"
-              min="0"
-              max="1"
-              defaultValue="0"
-            />
-          </div>
-        </div>
-
-        <div className="advanced-options--container">
-          <div className="input-container">
-            <div className="input">
-              <label htmlFor="transparentBackground">
-                Transparent background
-              </label>
-              <input
-                data-start-drawing
-                type="range"
-                className="toggle"
-                id="transparentBackground"
-                min="0"
-                max="1"
-                defaultValue="1"
-              />
-            </div>
-          </div>
-
-          <div className="input-container">
-            <div className="input">
-              <label htmlFor="smoothingAmount">Smoothing</label>
-              <input
-                type="range"
-                id="smoothingAmount"
-                min="0"
-                max="100"
-                defaultValue="0"
-              />
-            </div>
-          </div>
-
-          <div
-            className="padding experimental--smooth-svg--container--warning"
-            style={{ display: 'none' }}
-          >
-            Smoothing only applies to &quot;single line&quot; drawings.
-          </div>
-        </div>
+        <SiteFooter />
       </main>
+      <GoogleAnalytics gaId="G-M2FT27FXS2" />
     </>
   );
 }
