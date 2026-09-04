@@ -1,11 +1,9 @@
 const STEP = 0x6d2b79f5;
 
-export type PintrRandom = ReturnType<typeof createRandom>;
-
-// PINTR only needs one uint32 of random state. The call sites stay in the same
-// order as Math.random did, while checkpoints can now continue the sequence.
-export function createRandom(seed: number, restoredState?: number) {
-  let state = (restoredState === undefined ? seed : restoredState) >>> 0;
+// A seed makes a drawing reproducible without changing how the generator asks
+// for random integers.
+export function createRandom(seed: number) {
+  let state = seed >>> 0;
 
   function next() {
     state = (state + STEP) >>> 0;
@@ -24,11 +22,5 @@ export function createRandom(seed: number, restoredState?: number) {
     );
   }
 
-  return {
-    next,
-    int,
-    get state() {
-      return state;
-    },
-  };
+  return { int };
 }

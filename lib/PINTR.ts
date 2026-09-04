@@ -77,8 +77,10 @@ export async function pinterCreator(
   let running = false;
   let stopped = false;
 
-  // Draws toward the current target for one browser frame budget. Requesting
-  // one core line at a time keeps the target exact even when Definition is slow.
+  // Draws lines toward `session.target` within a single ~15ms time budget, then
+  // resolves on the next animation frame so the canvas can paint between batches.
+  // Requesting one core line at a time keeps the target exact even when Definition
+  // is slow.
   function drawBatch(currentSession: Session) {
     return new Promise<void>((resolve) => {
       const time = Date.now();
@@ -106,8 +108,10 @@ export async function pinterCreator(
     });
   }
 
-  // A live session can be replaced while the previous batch is waiting for its
-  // animation frame. Reading `session` again each loop picks up the replacement.
+  // Keeps batching until the drawn count reaches the current target, then idles;
+  // raising the target via `requestLines` restarts it. The core session stays
+  // warm while idle, so it continues without replaying the existing drawing.
+  // Reading `session` each iteration also picks up a replacement made by start().
   async function pump() {
     if (running) return;
     running = true;
@@ -121,6 +125,8 @@ export async function pinterCreator(
     running = false;
   }
 
+  // Start a fresh generator for this image and config. The core owns only the
+  // state needed to choose future lines; the app collects the returned coords.
   function start(config: PintrConfig) {
     drawContext.clearRect(0, 0, WIDTH, HEIGHT);
     pencilDraw = Draw(drawContext, config.singleLine);
@@ -131,6 +137,8 @@ export async function pinterCreator(
     };
   }
 
+  // Set the target line count and return immediately. Lower targets simply stop
+  // generation; raising the target later continues the same in-memory session.
   function requestLines(targetCount: number) {
     if (!session) throw new Error('PINTR: call start() before requestLines()');
     if (!Number.isInteger(targetCount) || targetCount < 0) {
@@ -141,6 +149,7 @@ export async function pinterCreator(
     if (!running) pump();
   }
 
+  // Permanently halt this instance when a new image takes over the canvas.
   function stop() {
     stopped = true;
   }

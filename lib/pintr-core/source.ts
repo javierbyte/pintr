@@ -113,8 +113,5 @@ export function createSource(
   return {
     gray,
     erase,
-    snapshot() {
-      return new Uint8Array(gray);
-    },
   };
 }

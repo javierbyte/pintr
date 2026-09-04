@@ -1,11 +1,9 @@
-import { decodeCheckpoint, encodeCheckpoint } from './checkpoint';
 import { tweenValue } from './math';
 import { createRandom } from './random';
 import { scanLine } from './scan';
 import { createSource } from './source';
 import type {
   PintrBatch,
-  PintrCheckpoint,
   PintrConfig,
   PintrImage,
   PintrLine,
@@ -15,14 +13,6 @@ import type {
 import { PintrError } from './types';
 
 const MAX_PIXELS = 100_000_000;
-
-type RestoredState = {
-  randomState: number;
-  cursor: PintrPoint;
-  gray: Uint8Array;
-  lines: PintrLine[];
-  pendingCount: number;
-};
 
 function validateImage(image: PintrImage) {
   if (!Number.isInteger(image.width) || !Number.isInteger(image.height)) {
@@ -61,19 +51,26 @@ function validateConfig(config: PintrConfig) {
   }
 }
 
-function createSession(
-  image: PintrImage,
-  inputConfig: PintrConfig,
-  seed: number,
-  restored?: RestoredState
-): PintrSession {
+export function createPintr(input: {
+  image: PintrImage;
+  config: PintrConfig;
+  seed?: number;
+}): PintrSession {
+  const { image } = input;
+  const seed =
+    input.seed === undefined
+      ? Math.floor(Math.random() * 0x100000000)
+      : input.seed;
+
   validateImage(image);
-  validateConfig(inputConfig);
+  validateConfig(input.config);
   if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) {
     throw new PintrError('seed must be a uint32');
   }
 
-  const config = { ...inputConfig };
+  // Everything needed to continue a drawing stays in this closure. Calling
+  // next() later resumes from these values without replaying earlier lines.
+  const config = { ...input.config };
   const tweenDefinition = Math.round(
     tweenValue(config.definition, [
       [0, 3],
@@ -92,19 +89,14 @@ function createSession(
       )) /
     100;
   const updateSampleRate = 100 - Math.floor(tweenDefinition / 2);
-  const source = createSource(
-    image.width,
-    image.height,
-    restored ? restored.gray : image.gray
-  );
-  const random = createRandom(seed, restored?.randomState);
-  const lines: PintrLine[] = restored ? restored.lines : [];
-  let pendingLines: PintrLine[] = restored
-    ? lines.slice(lines.length - restored.pendingCount)
-    : [];
-  let cursor: PintrPoint = restored
-    ? restored.cursor
-    : [Math.floor(image.width / 2), Math.floor(image.height / 2)];
+  const source = createSource(image.width, image.height, image.gray);
+  const random = createRandom(seed);
+  let pendingLines: PintrLine[] = [];
+  let cursor: PintrPoint = [
+    Math.floor(image.width / 2),
+    Math.floor(image.height / 2),
+  ];
+  let generatedLineCount = 0;
 
   function drawSequenceLine() {
     let from = cursor;
@@ -145,7 +137,6 @@ function createSession(
     light = scanLine(from, to, source.gray, image.height);
 
     const line: PintrLine = [from, to];
-    lines.push(line);
     pendingLines.push(line);
     cursor = line[1];
 
@@ -157,52 +148,25 @@ function createSession(
       throw new PintrError('next() lineCount must be a positive integer');
     }
 
-    const startLine = lines.length;
+    const startLine = generatedLineCount;
     const batch: PintrLine[] = [];
 
     for (let i = 0; i < lineCount; i++) {
       // Keep this before the next line: exactly R generated lines remain pending
       // until line R asks the source to refresh.
-      if (lines.length % updateSampleRate === 0) {
+      if (generatedLineCount % updateSampleRate === 0) {
         source.erase(pendingLines, config.strokeWidth * 1.5, feedbackAlpha);
         pendingLines = [];
       }
       batch.push(drawSequenceLine());
+      generatedLineCount++;
     }
 
     return {
       startLine,
-      endLine: lines.length,
+      endLine: generatedLineCount,
       lines: batch,
     };
-  }
-
-  function getLines(from = 0, to = lines.length) {
-    if (
-      !Number.isInteger(from) ||
-      !Number.isInteger(to) ||
-      from < 0 ||
-      to < from ||
-      to > lines.length
-    ) {
-      throw new PintrError('getLines() range is outside generated lines');
-    }
-
-    return lines.slice(from, to);
-  }
-
-  function save(): PintrCheckpoint {
-    return encodeCheckpoint({
-      width: image.width,
-      height: image.height,
-      config,
-      seed,
-      randomState: random.state,
-      cursor,
-      gray: source.snapshot(),
-      lines,
-      pendingCount: pendingLines.length,
-    });
   }
 
   return {
@@ -210,42 +174,8 @@ function createSession(
     height: image.height,
     seed,
     get lineCount() {
-      return lines.length;
+      return generatedLineCount;
     },
     next,
-    getLines,
-    save,
   };
-}
-
-export function createPintr(input: {
-  image: PintrImage;
-  config: PintrConfig;
-  seed?: number;
-}) {
-  const seed =
-    input.seed === undefined
-      ? Math.floor(Math.random() * 0x100000000)
-      : input.seed;
-  return createSession(input.image, input.config, seed);
-}
-
-export function restorePintr(checkpoint: PintrCheckpoint) {
-  if (!(checkpoint instanceof Uint8Array)) {
-    throw new PintrError('checkpoint must be a Uint8Array');
-  }
-
-  const state = decodeCheckpoint(checkpoint);
-  return createSession(
-    { width: state.width, height: state.height, gray: state.gray },
-    state.config,
-    state.seed,
-    {
-      randomState: state.randomState,
-      cursor: state.cursor,
-      gray: state.gray,
-      lines: state.lines,
-      pendingCount: state.pendingCount,
-    }
-  );
 }

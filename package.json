@@ -7,8 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc --noEmit -p tsconfig.json",
-    "test": "node --import ./tests/register.mjs --test tests/*.test.ts"
+    "type-check": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
     "@types/node": "26.4.0",

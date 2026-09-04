@@ -1,7 +1,7 @@
 # PINTR core
 
 ```ts
-import { createPintr, restorePintr } from './lib/pintr-core';
+import { createPintr } from './lib/pintr-core';
 import { preparePintrImage } from './lib/pintr-core/utils';
 
 const image = preparePintrImage({ width, height, rgba });
@@ -22,11 +22,6 @@ draw(first.lines);
 // Nothing runs between calls. Calling next() continues at line 128.
 const second = pintr.next(128);
 draw(second.lines);
-
-// A checkpoint contains the image's current working state and all prior lines.
-const checkpoint = pintr.save();
-const restored = restorePintr(checkpoint);
-draw(restored.next(128).lines);
 ```
 
 The implementation is a local module for now; no package is created by this
@@ -40,16 +35,18 @@ DOM, Canvas, decoder, renderer, timer, or platform dependency.
 
 ```ts
 createPintr({ image, config, seed? }): PintrSession;
-restorePintr(checkpoint): PintrSession;
 
 session.next(count): PintrBatch;
-session.getLines(from?, to?): PintrLine[];
-session.save(): Uint8Array;
 ```
 
 `next(count)` synchronously generates exactly that many lines. The session is
 naturally paused as soon as the call returns; call it again whenever the host is
-ready. Batch boundaries do not affect the generated coordinates.
+ready. Its working image, cursor, and random generator stay warm between calls,
+and batch boundaries do not affect the generated coordinates.
+
+The core only returns new lines. A host that needs the complete drawing owns
+that list and appends each batch to it. This keeps generation state small and
+lets a browser draw lines immediately without storing them twice.
 
 The input image is:
 
@@ -83,16 +80,17 @@ function frame() {
 A CLI can use larger batches or generate its whole target in one call:
 
 ```ts
+const lines = [];
+
 while (pintr.lineCount < targetLineCount) {
-  pintr.next(Math.min(1000, targetLineCount - pintr.lineCount));
+  const batch = pintr.next(
+    Math.min(1000, targetLineCount - pintr.lineCount)
+  );
+  lines.push(...batch.lines);
 }
 
-writeCoordinates(pintr.getLines());
+writeCoordinates(lines);
 ```
-
-Saving is also synchronous. The returned, versioned binary checkpoint is
-self-contained, so React Native or a CLI can persist it and later restore the
-session without decoding the original image again.
 
 ## Optional image utilities
 

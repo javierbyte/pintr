@@ -22,16 +22,12 @@ export type PintrBatch = {
   lines: PintrLine[];
 };
 
-export type PintrCheckpoint = Uint8Array;
-
 export type PintrSession = {
   width: number;
   height: number;
   seed: number;
   lineCount: number;
   next(lineCount: number): PintrBatch;
-  getLines(from?: number, to?: number): PintrLine[];
-  save(): PintrCheckpoint;
 };
 
 export class PintrError extends Error {
