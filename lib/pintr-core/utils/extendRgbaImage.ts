@@ -54,10 +54,11 @@ export function extendRgbaImage(
   const source = picture.rgba;
 
   // A row and a column of zeros ahead of the picture so the four-corner lookup
-  // needs no bounds tests. Every entry sums at most 100M bytes, well inside
-  // Uint32, so the sums stay exact and the fill stays deterministic.
+  // needs no bounds tests. The largest entry is width * height * 255, which
+  // overflows Uint32 past ~16.8 MP, so the prefix sums are held as Float64 —
+  // exact for integers well beyond the 100 MP validateRgbaImage allows.
   const satWidth = width + 1;
-  const sat = new Uint32Array(satWidth * (height + 1) * 4);
+  const sat = new Float64Array(satWidth * (height + 1) * 4);
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {

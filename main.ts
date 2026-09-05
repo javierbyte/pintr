@@ -46,7 +46,10 @@ export type configType = {
 const STROKE_MIN = 0.5;
 const STROKE_MAX = 20;
 const STROKE_POWER = 2;
-// Mirrors the #strokeWidth input's defaultValue; lands on the historical 1.5px.
+// Mirrors the #strokeWidth input's defaultValue; lands on 3.62px. Heavier than
+// the 1.5px this used to default to — and because strokeWidth also sets the
+// feedback erase radius, it changes which lines get picked, not just their
+// weight.
 const STROKE_SLIDER_DEFAULT = 40;
 
 function strokeWidthFromSlider(value: number): number {
