@@ -1,11 +1,24 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
-import { GoogleAnalytics } from '@next/third-parties/google';
 
 import './globals.css';
 
+// Self-hosted so no third-party origin sees a visit (see /privacy), and routed
+// through next/font so the URLs pick up the /pintr basePath automatically —
+// plain @font-face in globals.css does not.
 const brutalita = localFont({
-  src: '../public/fonts/Brutalita-Regular.woff2',
+  src: [
+    {
+      path: '../public/fonts/Brutalita-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Brutalita-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
   display: 'swap',
   variable: '--font-brutalita',
 });
@@ -62,7 +75,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={brutalita.variable}>
       <body>{children}</body>
-      <GoogleAnalytics gaId="G-M2FT27FXS2" />
     </html>
   );
 }
