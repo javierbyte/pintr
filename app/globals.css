@@ -1,7 +1,25 @@
+@font-face {
+  font-family: 'Brutalita';
+  src: url('https://brutalita.com/font/Brutalita-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Brutalita';
+  src: url('https://brutalita.com/font/Brutalita-SemiBold.woff2')
+    format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   touch-action: pan-y;
   margin: 0;
-  padding: 0.25rem 0 2rem;
+  padding: 0.25rem 0 3rem;
+  letter-spacing: -0.01em;
 }
 
 .skip-link {
@@ -34,11 +52,10 @@ a:focus {
 body,
 html,
 button {
-  font-family: var(--font-brutalita), Courier, monospace, sans-serif;
-  letter-spacing: var(--letter-spacing);
+  font-family: 'Brutalita', Courier, monospace, sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 24px;
+  font-size: 22.4px;
 }
 
 h1 {
@@ -71,7 +88,7 @@ button {
   appearance: none;
   -webkit-appearance: none;
   margin: 8px 16px;
-  padding: 10px 16px 8px;
+  padding: 8px 16px;
   border: 3px solid #000;
   display: block;
   background: #ecf0f1;
@@ -79,7 +96,6 @@ button {
   color: #000;
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-small);
-  letter-spacing: var(--letter-spacing-small);
 }
 button:hover {
   cursor: pointer;
@@ -129,12 +145,10 @@ body.-dragging::after {
   /* normal text */
   --font-size: 1rem;
   --font-weight: 400;
-  --letter-spacing: -1px;
 
   /* small text: 4/5 of normal, medium weight */
-  --font-size-small: 0.88rem;
-  --font-weight-small: 500;
-  --letter-spacing-small: normal;
+  --font-size-small: 1rem;
+  --font-weight-small: 600;
 }
 
 .inline {

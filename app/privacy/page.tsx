@@ -187,8 +187,8 @@ export default function PrivacyPage() {
             </strong>
           </li>
           <li>
-            The typeface is served from this site, so no font or other
-            third-party CDN sees your visit.
+            The Brutalita typeface is loaded from brutalita.com, so that origin
+            sees your browser&rsquo;s font request.
           </li>
         </ul>
 

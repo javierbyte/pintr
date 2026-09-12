@@ -1,27 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import localFont from 'next/font/local';
-
 import './globals.css';
-
-// Self-hosted so no third-party origin sees a visit (see /privacy), and routed
-// through next/font so the URLs pick up the /pintr basePath automatically —
-// plain @font-face in globals.css does not.
-const brutalita = localFont({
-  src: [
-    {
-      path: '../public/fonts/Brutalita-Regular.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../public/fonts/Brutalita-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-  ],
-  display: 'swap',
-  variable: '--font-brutalita',
-});
 
 const TITLE = 'PINTR - Create plotter-like line drawings from your images';
 const DESCRIPTION = 'Create plotter-like line drawings from your images.';
@@ -73,7 +51,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={brutalita.variable}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://brutalita.com" crossOrigin="" />
+      </head>
       <body>{children}</body>
     </html>
   );

@@ -76,7 +76,7 @@ export default function Page() {
               step="1"
               min="0"
               max="100"
-              defaultValue="35"
+              defaultValue="42"
             />
           </div>
 
@@ -128,7 +128,7 @@ export default function Page() {
               step="1"
               min="0"
               max="100"
-              defaultValue="40"
+              defaultValue="35"
             />
           </div>
 
@@ -329,7 +329,7 @@ export default function Page() {
             <li>Download. Your pictures never leave your computer.</li>
           </ol>
           <p>
-            More information and source available on{' '}
+            {'More information and source available on '}
             <a href="https://github.com/javierbyte/pintr">Github</a>.
           </p>
         </section>
