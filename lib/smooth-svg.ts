@@ -84,7 +84,7 @@ export function generateSmoothSvg(
 
   return `<svg viewBox="0 0 ${size[0]} ${
     size[1]
-  }" xmlns="http://www.w3.org/2000/svg" stroke="black">
+  }" xmlns="http://www.w3.org/2000/svg" stroke="black" stroke-linejoin="round">
     ${background}${path}
   </svg>
   `;

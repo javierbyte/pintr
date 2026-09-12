@@ -1,9 +1,14 @@
-export default function Draw(ctx: CanvasRenderingContext2D) {
+export default function Draw(
+  ctx: CanvasRenderingContext2D,
+  singleLine = false
+) {
   ctx.beginPath();
+  let hasPoint = false;
 
   function lineBuffer(from: [number, number], to: [number, number]) {
-    ctx.moveTo(from[0], from[1]);
+    if (!singleLine || !hasPoint) ctx.moveTo(from[0], from[1]);
     ctx.lineTo(to[0], to[1]);
+    hasPoint = true;
   }
 
   function stroke(
@@ -12,9 +17,11 @@ export default function Draw(ctx: CanvasRenderingContext2D) {
     const { color = '#000', width = 1 } = ops;
 
     ctx.lineWidth = width;
+    ctx.lineJoin = 'round';
     ctx.strokeStyle = color;
     ctx.stroke();
     ctx.beginPath();
+    hasPoint = false;
   }
 
   return {

@@ -17,21 +17,26 @@ export function renderCoordsToCanvas(
   ctx.clearRect(0, 0, width, height);
   ctx.beginPath();
 
-  if (singleLine && smoothingAmount > 0) {
-    const points = coords.map((coord) => coord[0]);
-    if (points.length) {
-      const segments = smoothControlPoints(points, smoothingAmount);
-      ctx.moveTo(points[0][0], points[0][1]);
-      for (const s of segments) {
-        ctx.bezierCurveTo(
-          s.cps[0],
-          s.cps[1],
-          s.cpe[0],
-          s.cpe[1],
-          s.point[0],
-          s.point[1]
-        );
+  if (singleLine) {
+    if (smoothingAmount > 0) {
+      const points = coords.map((coord) => coord[0]);
+      if (points.length) {
+        const segments = smoothControlPoints(points, smoothingAmount);
+        ctx.moveTo(points[0][0], points[0][1]);
+        for (const s of segments) {
+          ctx.bezierCurveTo(
+            s.cps[0],
+            s.cps[1],
+            s.cpe[0],
+            s.cpe[1],
+            s.point[0],
+            s.point[1]
+          );
+        }
       }
+    } else if (coords.length) {
+      ctx.moveTo(coords[0][0][0], coords[0][0][1]);
+      for (const [, to] of coords) ctx.lineTo(to[0], to[1]);
     }
   } else {
     for (const [from, to] of coords) {
@@ -41,6 +46,7 @@ export function renderCoordsToCanvas(
   }
 
   ctx.lineWidth = strokeWidth;
+  ctx.lineJoin = 'round';
   ctx.strokeStyle = '#000';
   ctx.stroke();
 }
