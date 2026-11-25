@@ -1,5 +1,4 @@
-import { PintrError } from '../types';
-import { toUint8Clamp, validateRgbaImage } from './shared';
+import { toUint8Clamp } from './shared';
 import type { RgbaImage } from './types';
 
 export function resizeRgbaImage(
@@ -9,11 +8,6 @@ export function resizeRgbaImage(
     allowUpscale = false,
   }: { longestSide: number; allowUpscale?: boolean }
 ): RgbaImage {
-  validateRgbaImage(image);
-  if (!Number.isInteger(longestSide) || longestSide <= 0) {
-    throw new PintrError('resize longestSide must be a positive integer');
-  }
-
   const scale = longestSide / Math.max(image.width, image.height);
   if (!allowUpscale && scale >= 1) {
     return {

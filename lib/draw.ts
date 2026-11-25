@@ -1,31 +1,21 @@
-export default function Draw(
+import type { Coord } from './PINTR';
+
+// Strokes `coords` on top of whatever is already in the canvas. A single line
+// drawing is one connected path, so its corners get proper joins.
+export function drawLines(
   ctx: CanvasRenderingContext2D,
-  singleLine = false
+  coords: [Coord, Coord][],
+  { singleLine, strokeWidth }: { singleLine: boolean; strokeWidth: number }
 ) {
   ctx.beginPath();
-  let hasPoint = false;
 
-  function lineBuffer(from: [number, number], to: [number, number]) {
-    if (!singleLine || !hasPoint) ctx.moveTo(from[0], from[1]);
+  coords.forEach(([from, to], idx) => {
+    if (!singleLine || idx === 0) ctx.moveTo(from[0], from[1]);
     ctx.lineTo(to[0], to[1]);
-    hasPoint = true;
-  }
+  });
 
-  function stroke(
-    ops: { color?: string; width?: number } = { color: '#000', width: 1 }
-  ) {
-    const { color = '#000', width = 1 } = ops;
-
-    ctx.lineWidth = width;
-    ctx.lineJoin = 'round';
-    ctx.strokeStyle = color;
-    ctx.stroke();
-    ctx.beginPath();
-    hasPoint = false;
-  }
-
-  return {
-    lineBuffer,
-    stroke,
-  };
+  ctx.lineWidth = strokeWidth;
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#000';
+  ctx.stroke();
 }

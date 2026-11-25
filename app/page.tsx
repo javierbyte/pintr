@@ -5,6 +5,48 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 
 import SiteFooter from './site-footer';
 
+// Every control is a range input that `main.ts` reads by its id.
+function Slider({
+  id,
+  label,
+  ...props
+}: { id: string; label: string } & React.ComponentProps<'input'>) {
+  return (
+    <div className="input">
+      <label htmlFor={id}>{label}</label>
+      <input
+        type="range"
+        data-start-drawing
+        id={id}
+        min="0"
+        max="100"
+        {...props}
+      />
+    </div>
+  );
+}
+
+// An on/off control is a range input that only goes from 0 to 1.
+function Toggle({
+  id,
+  label,
+  defaultValue = '0',
+}: {
+  id: string;
+  label: string;
+  defaultValue?: string;
+}) {
+  return (
+    <Slider
+      id={id}
+      label={label}
+      className="toggle"
+      max="1"
+      defaultValue={defaultValue}
+    />
+  );
+}
+
 export default function Page() {
   useEffect(() => {
     let disposed = false;
@@ -59,91 +101,23 @@ export default function Page() {
           </div>
 
           <div className="srcimage-container padding">
-            <div id="srcImg" role="img" aria-label="Source image"></div>
+            <canvas id="srcImg" role="img" aria-label="Source image"></canvas>
             <div className="label">Source</div>
           </div>
         </div>
 
-        <canvas id="src" style={{ display: 'none' }}></canvas>
-
         <div className="input-container">
-          <div className="input">
-            <label htmlFor="lines">Lines</label>
-            <input
-              type="range"
-              data-start-drawing
-              id="lines"
-              step="1"
-              min="0"
-              max="100"
-              defaultValue="42"
-            />
-          </div>
-
-          <div className="input">
-            <label htmlFor="contrast">Contrast</label>
-            <input
-              type="range"
-              data-start-drawing
-              id="contrast"
-              step="10"
-              min="0"
-              max="100"
-              defaultValue="50"
-            />
-          </div>
-
-          <div className="input">
-            <label htmlFor="definition">Definition</label>
-            <input
-              type="range"
-              data-start-drawing
-              id="definition"
-              step="10"
-              min="0"
-              max="100"
-              defaultValue="55"
-            />
-          </div>
-
-          <div className="input">
-            <label htmlFor="singleLine">Single Line</label>
-            <input
-              type="range"
-              data-start-drawing
-              className="toggle"
-              id="singleLine"
-              min="0"
-              max="1"
-              defaultValue="1"
-            />
-          </div>
-
-          <div className="input">
-            <label htmlFor="strokeWidth">Stroke width</label>
-            <input
-              type="range"
-              data-start-drawing
-              id="strokeWidth"
-              step="1"
-              min="0"
-              max="100"
-              defaultValue="35"
-            />
-          </div>
-
-          <div className="input">
-            <label htmlFor="advancedOptions">Advanced</label>
-            <input
-              data-start-drawing
-              type="range"
-              className="toggle"
-              id="advancedOptions"
-              min="0"
-              max="1"
-              defaultValue="0"
-            />
-          </div>
+          <Slider id="lines" label="Lines" defaultValue="42" />
+          <Slider id="contrast" label="Contrast" step="10" defaultValue="50" />
+          <Slider
+            id="definition"
+            label="Definition"
+            step="10"
+            defaultValue="55"
+          />
+          <Toggle id="singleLine" label="Single Line" defaultValue="1" />
+          <Slider id="strokeWidth" label="Stroke width" defaultValue="35" />
+          <Toggle id="advancedOptions" label="Advanced" />
         </div>
 
         <div className="advanced-options--container">
@@ -178,115 +152,39 @@ export default function Page() {
           </div>
 
           <div className="input-container">
-            <div className="input">
-              <label htmlFor="padding">Padding</label>
-              <input
-                type="range"
-                data-start-drawing
-                id="padding"
-                min="0"
-                max="25"
-                defaultValue="0"
-              />
-            </div>
+            <Slider id="padding" label="Padding" max="25" defaultValue="0" />
           </div>
 
-          <div className="input-container extend-image--container">
-            <div className="input">
-              <label htmlFor="extendImage">Extend original image</label>
-              <input
-                data-start-drawing
-                type="range"
-                className="toggle"
-                id="extendImage"
-                min="0"
-                max="1"
-                defaultValue="0"
-              />
-            </div>
+          <div className="input-container">
+            <Toggle id="extendImage" label="Extend original image" />
           </div>
 
           <div className="folder">
             <div className="input-container folder--tab">
-              <div className="input">
-                <label htmlFor="vignette">Vignette</label>
-                <input
-                  data-start-drawing
-                  type="range"
-                  className="toggle"
-                  id="vignette"
-                  min="0"
-                  max="1"
-                  defaultValue="0"
-                />
-              </div>
+              <Toggle id="vignette" label="Vignette" />
             </div>
 
             <div className="vignette-options--container folder--sheet">
               <div className="input-container">
-                <div className="input">
-                  <label htmlFor="vignetteDistance">Vignette distance</label>
-                  <input
-                    type="range"
-                    data-start-drawing
-                    id="vignetteDistance"
-                    min="0"
-                    max="100"
-                    defaultValue="50"
-                  />
-                </div>
+                <Slider
+                  id="vignetteDistance"
+                  label="Vignette distance"
+                  defaultValue="50"
+                />
               </div>
 
               <div className="input-container">
-                <div className="input">
-                  <label htmlFor="vignetteHardness">Vignette hardness</label>
-                  <input
-                    type="range"
-                    data-start-drawing
-                    id="vignetteHardness"
-                    min="0"
-                    max="100"
-                    defaultValue="50"
-                  />
-                </div>
+                <Slider
+                  id="vignetteHardness"
+                  label="Vignette hardness"
+                  defaultValue="50"
+                />
               </div>
 
               <div className="input-container">
-                <div className="input">
-                  <label htmlFor="vignetteSquare">Vignette square</label>
-                  <input
-                    data-start-drawing
-                    type="range"
-                    className="toggle"
-                    id="vignetteSquare"
-                    min="0"
-                    max="1"
-                    defaultValue="0"
-                  />
-                </div>
+                <Toggle id="vignetteSquare" label="Vignette square" />
               </div>
             </div>
-          </div>
-
-          <div className="input-container">
-            <div className="input">
-              <label htmlFor="smoothingAmount">Smoothing</label>
-              <input
-                data-start-drawing
-                type="range"
-                id="smoothingAmount"
-                min="0"
-                max="100"
-                defaultValue="0"
-              />
-            </div>
-          </div>
-
-          <div
-            className="padding experimental--smooth-svg--container--warning"
-            style={{ display: 'none' }}
-          >
-            Smoothing only applies to &quot;single line&quot; drawings.
           </div>
 
           <div className="flex">
@@ -303,20 +201,11 @@ export default function Page() {
           <button id="downloadSvg">Download SVG</button>
 
           {/* Only affects the downloads, so it lives with the download buttons. */}
-          <div className="input">
-            <label htmlFor="transparentBackground">
-              Transparent background
-            </label>
-            <input
-              data-start-drawing
-              type="range"
-              className="toggle"
-              id="transparentBackground"
-              min="0"
-              max="1"
-              defaultValue="1"
-            />
-          </div>
+          <Toggle
+            id="transparentBackground"
+            label="Transparent background"
+            defaultValue="1"
+          />
         </div>
 
         <section className="instructions" aria-label="How to use">

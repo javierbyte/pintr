@@ -44,13 +44,13 @@ export default function PrivacyPage() {
       </header>
 
       <main id="main" className="doc">
-        <p className="meta">Last updated: August 29, 2026.</p>
+        <p className="meta">Last updated: November 26, 2026.</p>
 
         <p>
           PINTR turns a photo into a line drawing. The app for iPhone and iPad
           does all of that work on your device. It has no account, no server,
-          and nothing to sign in to, so there is no personal information for it
-          to collect, store, or share.
+          and nothing to sign in to, so it collects nothing and shares nothing.
+          What it keeps stays on your device.
         </p>
 
         <p>
@@ -86,49 +86,120 @@ export default function PrivacyPage() {
 
         <p>
           The app can only see an image after you choose it yourself, through
-          the Add Image menu:
+          the Add Media menu:
         </p>
 
         <ul>
           <li>
             <strong>Choose Photo</strong> opens the system photo picker. The
             picker runs outside the app and hands over only the single item you
-            pick, so the app never gets access to your photo library.
+            pick, so the app never gets read access to your photo library.
           </li>
           <li>
             <strong>Take Photo</strong> opens the camera. iOS asks for camera
             permission the first time, for the reason shown in the prompt:
             &quot;Take a photo to turn it into a PINTR drawing.&quot; The photo
-            goes straight into the drawing and is not saved anywhere by PINTR.
+            is not saved to your photo library. Its working copy is kept in the
+            app in the same way as any other picture, as described below.
           </li>
           <li>
             <strong>Open File…</strong> and drag-and-drop read the one image
             file you select.
           </li>
+          <li>
+            <strong>Samples…</strong> opens a sample picture that comes with
+            the app.
+          </li>
         </ul>
 
         <p>
           Whatever the source, the image is prepared and drawn entirely on your
-          device. It is never uploaded, and it is not copied anywhere outside
-          the app. Choosing another image, or closing the app, discards the
-          previous one.
+          device. It is never uploaded. The <strong>Remove background</strong>{' '}
+          option uses Apple&rsquo;s on-device subject detection, and nothing is
+          sent anywhere.
         </p>
+
+        <p>
+          The app keeps the picture you are working on and its settings on your
+          device, so the edit reopens the next time you launch the app. What it
+          keeps is a reduced working-size copy of the picture, not the original
+          file. It also keeps your last 5 edits, shown under{' '}
+          <strong>Recent</strong> on the start screen. Each one is stored as
+          that working copy, its settings, and a small thumbnail of the drawing.
+          All of this lives in the app&rsquo;s own storage on your device and is
+          never uploaded. For the sample pictures that come with the app, no
+          copy is made; only the settings are remembered.
+        </p>
+
+        <p>You can remove what the app keeps at any time:</p>
+
+        <ul>
+          <li>
+            <strong>Close Photo</strong> in the Add Media menu removes the open
+            picture.
+          </li>
+          <li>
+            <strong>Clear</strong> next to Recent removes the recent edits.
+          </li>
+          <li>
+            A recent edit is also dropped when newer ones push it past five.
+          </li>
+          <li>Deleting the app removes everything.</li>
+        </ul>
 
         <h2>Exported drawings</h2>
 
         <p>
-          When you export a drawing, PINTR writes a PNG or SVG file into
-          app-owned temporary storage on your device. That file leaves the app
-          only when you send it somewhere yourself with the system share sheet
-          — to Files, Photos, Mail, or another app of your choosing. PINTR does
-          not upload it, and has no say in what the destination app does with
-          it afterwards.
+          Exports are made on your device, and each one goes only where you
+          send it:
+        </p>
+
+        <ul>
+          <li>
+            <strong>PNG</strong> — <strong>Save PNG to Photos</strong> or{' '}
+            <strong>Share PNG</strong>.
+          </li>
+          <li>
+            <strong>SVG</strong>, <strong>PDF</strong>, and{' '}
+            <strong>Coordinates</strong> (JSON or CSV) —{' '}
+            <strong>Save to Files</strong>, which opens the system save dialog
+            so you choose the location, or <strong>Share</strong>.
+          </li>
+          <li>
+            <strong>Video</strong> — <strong>Create Video</strong>, then{' '}
+            <strong>Share Video</strong>.
+          </li>
+          <li>
+            <strong>Live Photo</strong> —{' '}
+            <strong>Save Live Photo to Photos</strong>.
+          </li>
+        </ul>
+
+        <p>
+          When you share an export, including a video, PINTR first writes the
+          file into app-owned temporary storage on your device. That file
+          leaves the app only when you send it somewhere yourself with the
+          system share sheet — to Files, Photos, Mail, or another app of your
+          choosing. PINTR does not upload it, and has no say in what the
+          destination app does with it afterwards.
         </p>
 
         <p>
           Temporary export files are removed on a later launch of the app, so
           save or share an export you want to keep rather than relying on that
-          temporary copy.
+          temporary copy. Files saved through the save dialog, and items saved
+          to Photos, stay where you put them until you delete them there.
+        </p>
+
+        <p>
+          Saving a PNG or a Live Photo to Photos asks for add-only access to
+          your photo library, for the reason shown in the prompt: &quot;Save
+          exported drawings and Live Photos to your photo library.&quot;
+          Add-only means the app can add items but cannot read or browse your
+          library. iOS asks only the first time you use one of those two save
+          buttons, and the rest of the app works without this permission. You
+          can change it in Settings → PINTR → Photos, or in Settings → Privacy
+          &amp; Security → Photos.
         </p>
 
         <h2>Data retention and deletion</h2>
@@ -141,21 +212,42 @@ export default function PrivacyPage() {
 
         <ul>
           <li>
-            The image currently loaded in the app is discarded when you replace
-            it or close the app.
+            The working copy and settings of the picture you have open stay in
+            the app until you choose <strong>Close Photo</strong> in the Add
+            Media menu.
+          </li>
+          <li>
+            Your last 5 edits stay in the app until you tap{' '}
+            <strong>Clear</strong> next to Recent, or until newer edits push
+            them past five.
+          </li>
+          <li>
+            PNGs and Live Photos saved to Photos stay in your photo library, and
+            are deleted there, in Photos.
+          </li>
+          <li>
+            Files saved through the save dialog stay in the location you chose,
+            and are deleted there, in Files.
           </li>
           <li>
             Exports you shared live in whichever app or folder you sent them to,
-            and are deleted there — in Files, Photos, or the destination app.
+            and are deleted there.
           </li>
           <li>
-            Temporary exports the app still holds are cleared on a later launch,
-            and deleting the app removes them along with everything else it
-            stores.
+            Temporary exports the app still holds are cleared on a later launch.
+          </li>
+          <li>
+            Deleting the app removes everything it stores: the open picture,
+            the recent edits, and any temporary exports.
           </li>
           <li>
             Camera permission can be changed or revoked at any time in Settings
             → Privacy &amp; Security → Camera, or in Settings → PINTR.
+          </li>
+          <li>
+            Permission to add to Photos can be changed or revoked at any time in
+            Settings → Privacy &amp; Security → Photos, or in Settings → PINTR →
+            Photos.
           </li>
         </ul>
 

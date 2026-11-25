@@ -6,33 +6,20 @@ export type PintrLine = [from: PintrPoint, to: PintrPoint];
 export type PintrImage = {
   width: number;
   height: number;
+  // Column-major: gray[x * height + y], where 0 is black and 255 is white.
   gray: Uint8Array;
 };
 
 export type PintrConfig = {
+  // 0-100
   contrast: number;
+  // 0-100
   definition: number;
   singleLine: boolean;
+  // in px, greater than zero
   strokeWidth: number;
 };
 
-export type PintrBatch = {
-  startLine: number;
-  endLine: number;
-  lines: PintrLine[];
-};
-
 export type PintrSession = {
-  width: number;
-  height: number;
-  seed: number;
-  lineCount: number;
-  next(lineCount: number): PintrBatch;
+  next(): PintrLine;
 };
-
-export class PintrError extends Error {
-  constructor(message: string) {
-    super(`PINTR: ${message}`);
-    this.name = 'PintrError';
-  }
-}

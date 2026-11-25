@@ -1,13 +1,12 @@
-import { PintrError } from '../types';
 import { extendRgbaImage } from './extendRgbaImage';
 import { resizeRgbaImage } from './resizeRgbaImage';
-import { clamp, validateRgbaImage } from './shared';
+import { clamp } from './shared';
 import type { RgbaImage } from './types';
 
 export type FrameOptions = {
   // width / height of the output canvas; null keeps the source ratio.
   aspectRatio: number | null;
-  // 0-100, percent of the canvas short side, inset on each of the four sides.
+  // 0-50, percent of the canvas short side, inset on each of the four sides.
   padding: number;
   // Fill the space around the picture with a blurred continuation of it
   // instead of leaving it white.
@@ -24,14 +23,6 @@ export function frameRgbaImage(
   image: RgbaImage,
   { aspectRatio, padding, extend = false }: FrameOptions
 ): RgbaImage {
-  validateRgbaImage(image);
-  if (aspectRatio !== null && (!Number.isFinite(aspectRatio) || aspectRatio <= 0)) {
-    throw new PintrError('frame aspectRatio must be a positive number or null');
-  }
-  if (!Number.isFinite(padding) || padding < 0 || padding >= 50) {
-    throw new PintrError('frame padding must be between 0 and 50');
-  }
-
   const longest = Math.max(image.width, image.height);
   const ratio = aspectRatio ?? image.width / image.height;
   const canvasWidth = ratio >= 1 ? longest : Math.max(1, Math.round(longest * ratio));

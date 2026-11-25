@@ -1,5 +1,5 @@
 import type { PintrImage } from '../types';
-import { toUint8Clamp, validateRgbaImage } from './shared';
+import { toUint8Clamp } from './shared';
 import type { RgbaImage } from './types';
 
 const RED_PREFERENCE = 0.1;
@@ -10,7 +10,6 @@ const WEIGHTS = {
 };
 
 export function preparePintrImage(image: RgbaImage): PintrImage {
-  validateRgbaImage(image);
   const pixels = image.rgba;
   let minLightness = Infinity;
   let maxLightness = 0;
