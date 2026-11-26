@@ -39,7 +39,7 @@ export default function SupportPage() {
       <header className="flex doc-header">
         <h1>PINTR Support</h1>
         <p className="doc-back">
-          <Link href="/">Back to PINTR</Link>
+          <a href="/pintr">Back to PINTR</a>
         </p>
       </header>
 
@@ -61,7 +61,7 @@ export default function SupportPage() {
           Email <a href="mailto:pintr@javier.xyz">pintr@javier.xyz</a> with
           questions, bugs, or feature requests. It helps to include your device
           model, your iOS or iPadOS version, and the app version shown at the
-          bottom of <strong>About PINTR</strong> inside the app.
+          top of <strong>About PINTR</strong> inside the app.
         </p>
 
         <h2>Requirements</h2>
@@ -83,8 +83,8 @@ export default function SupportPage() {
             <strong>Take Photo</strong> for the camera,{' '}
             <strong>Open File…</strong> for an image file, or{' '}
             <strong>Samples…</strong> for a sample picture. You can also drag
-            an image into the app. The same menu has{' '}
-            <strong>Close Photo</strong>, which removes the open picture.
+            an image into the app or choose one from the photo picker on the
+            start screen.
           </li>
           <li>
             The drawing starts immediately and fills in line by line while you
@@ -99,10 +99,12 @@ export default function SupportPage() {
         </ol>
 
         <p>
-          The start screen also offers <strong>Try a Sample</strong> and a{' '}
-          <strong>Recent</strong> row with your last 5 edits. Tap{' '}
-          <strong>Clear</strong> next to Recent to remove them. When you come
-          back, the app reopens on the edit you left.
+          PINTR can reopen your active edit the next time you launch it.
+          To return to the start screen, choose <strong>Close Photo</strong>{' '}
+          from <strong>Add Media</strong>. Tap an image under{' '}
+          <strong>Recent</strong> to reopen it or tap <strong>Clear</strong> and
+          confirm to remove all recent edits. The <strong>Samples</strong> row
+          appears when there are no recent edits.
         </p>
 
         <p>
@@ -113,8 +115,8 @@ export default function SupportPage() {
         <h2>Controls</h2>
 
         <p>
-          The controls live in the <strong>Sidebar</strong>, which you can
-          collapse and expand.
+          Use <strong>Show Controls</strong> in the toolbar to open the
+          Sidebar. Expand it to see all the controls.
         </p>
 
         <p>
@@ -125,7 +127,9 @@ export default function SupportPage() {
           <li>
             <strong>Lines</strong> — how many strokes the drawing uses. More
             lines mean more detail and a longer draw.{' '}
-            <strong>Auto line count</strong> lets the app choose the number.
+            With <strong>Auto line count</strong> on, PINTR chooses a count
+            for the image. Adjust the Lines ruler up or down to change the
+            result.
           </li>
           <li>
             <strong>Stroke width</strong> — the thickness of each line.
@@ -191,6 +195,10 @@ export default function SupportPage() {
 
         <h2>Exporting</h2>
 
+        <p>
+          Open <strong>Export</strong> and choose a <strong>Format</strong>.
+        </p>
+
         <ul>
           <li>
             <strong>PNG</strong> — <strong>Save PNG to Photos</strong> or{' '}
@@ -200,18 +208,18 @@ export default function SupportPage() {
           <li>
             <strong>SVG</strong> — vector paths, for plotters, cutters, and
             editors like Illustrator, Affinity, Figma, or Inkscape.{' '}
-            <strong>Save to Files</strong> or <strong>Share</strong>. Option:{' '}
+            <strong>Save SVG to Files</strong> or <strong>Share SVG</strong>.
+            You can also choose a <strong>Transparent background</strong>.
+          </li>
+          <li>
+            <strong>PDF</strong> — <strong>Save PDF to Files</strong> or{' '}
+            <strong>Share PDF</strong>. You can also choose a{' '}
             <strong>Transparent background</strong>.
           </li>
           <li>
-            <strong>PDF</strong> — <strong>Save to Files</strong> or{' '}
-            <strong>Share</strong>. Option:{' '}
-            <strong>Transparent background</strong>.
-          </li>
-          <li>
-            <strong>Coordinates</strong> — <strong>Save to Files</strong> or{' '}
-            <strong>Share</strong>. Options: <strong>File type</strong> (JSON
-            or CSV) and <strong>Normalize to 0–1</strong>.
+            <strong>Coordinates</strong> — choose JSON or CSV under{' '}
+            <strong>File type</strong>, then save to Files or share. Turn on{' '}
+            <strong>Normalize to 0–1</strong> to export relative coordinates.
           </li>
           <li>
             <strong>Video</strong> — shows the drawing being made line by line.
@@ -223,18 +231,16 @@ export default function SupportPage() {
             line by line. Tap <strong>Save Live Photo to Photos</strong>.
           </li>
           <li>
-            <strong>Save to Files</strong> opens the system save dialog, so you
-            choose where the file goes. The Share buttons open the system share
-            sheet, from which you can send the file or open it in another app.
+            The save buttons for SVG, PDF, and coordinates open the system
+            save dialog. The Share buttons open the system share sheet.
           </li>
           <li>
             Long exports show their progress and a{' '}
             <strong>Cancel Export</strong> button.
           </li>
           <li>
-            Shared exports are written to temporary storage inside the app and
-            are cleared on a later launch, so save or send the file rather than
-            relying on that temporary copy.
+            Temporary export files are cleared when the app next launches.
+            Save or send the file if you want to keep a copy.
           </li>
         </ul>
 
@@ -250,7 +256,7 @@ export default function SupportPage() {
         <p>
           <strong>Camera.</strong> The first time you use{' '}
           <strong>Take Photo</strong>, iOS asks for camera permission. If you
-          declined earlier and want it back, open Settings → PINTR and turn on
+          declined earlier and want it back, open Settings → Apps → PINTR and turn on
           Camera, or go to Settings → Privacy &amp; Security → Camera and enable
           PINTR there. Return to the app and choose{' '}
           <strong>Take Photo</strong> again. Everything else in the app keeps
@@ -265,7 +271,7 @@ export default function SupportPage() {
           cannot read or browse your library. If saving is refused, the app
           says &quot;Allow PINTR to add photos in Settings, then try
           again.&quot; and offers an <strong>Open Settings</strong> button. You
-          can also turn it back on in Settings → PINTR → Photos, or in Settings
+          can also turn it back on in Settings → Apps → PINTR → Photos, or in Settings
           → Privacy &amp; Security → Photos. Everything else in the app keeps
           working without this permission.
         </p>
@@ -298,9 +304,7 @@ export default function SupportPage() {
         <h3>Drawing feels slow</h3>
         <p>
           A high line count is simply a lot of work. The image appears
-          progressively and stays interactive while it draws; lower{' '}
-          <strong>Lines</strong> for a faster result, and use{' '}
-          <strong>Stop</strong> to end a draw you no longer want.
+          progressively. Lower <strong>Lines</strong> for a faster result.
         </p>
 
         <h3>An export failed</h3>
@@ -333,8 +337,9 @@ export default function SupportPage() {
 
         <h3>&quot;This device cannot encode HEVC at that size.&quot;</h3>
         <p>
-          Video or Live Photo export at this drawing size is not supported on
-          the device. Try a smaller aspect ratio or source.
+          The device can’t encode video or a Live Photo at the current
+          dimensions. Try switching <strong>Aspect ratio</strong> to{' '}
+          <strong>Square</strong> and export again.
         </p>
 
         <h3>&quot;Could not encode the complete animation.&quot;</h3>
@@ -352,8 +357,7 @@ export default function SupportPage() {
         <h2>Privacy</h2>
 
         <p>
-          Your photos and drawings stay on your device. PINTR has no account, no
-          analytics, and no network service. The full{' '}
+          PINTR processes your photos and drawings on your device. The full{' '}
           <strong>
             <Link href="/privacy">privacy policy</Link>
           </strong>{' '}
@@ -364,7 +368,7 @@ export default function SupportPage() {
 
         <p>
           There is also a free web version of PINTR at{' '}
-          <Link href="/">javier.xyz/pintr</Link>, and the drawing engine is open
+          <a href="/pintr">javier.xyz/pintr</a>, and the drawing engine is open
           source on{' '}
           <a href="https://github.com/javierbyte/pintr">GitHub</a>.
         </p>

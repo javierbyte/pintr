@@ -39,7 +39,7 @@ export default function PrivacyPage() {
       <header className="flex doc-header">
         <h1>PINTR Privacy Policy</h1>
         <p className="doc-back">
-          <Link href="/">Back to PINTR</Link>
+          <a href="/pintr">Back to PINTR</a>
         </p>
       </header>
 
@@ -48,25 +48,15 @@ export default function PrivacyPage() {
 
         <p>
           PINTR turns a photo into a line drawing. The app for iPhone and iPad
-          does all of that work on your device. It has no account, no server,
-          and nothing to sign in to, so it collects nothing and shares nothing.
-          What it keeps stays on your device.
-        </p>
-
-        <p>
-          This policy covers two separate things: the <strong>PINTR app</strong>{' '}
-          you install from the App Store, and this <strong>website</strong> at
-          javier.xyz/pintr. They are described separately below because they do
-          not work the same way.
+          processes your photos and creates exports on your device. This policy
+          also covers the web drawing tool at javier.xyz/pintr.
         </p>
 
         <h2>The PINTR app for iPhone and iPad</h2>
 
         <p>
-          The app <strong>collects no data</strong>. Its bundled privacy
-          manifest declares no collected data types and no tracking, which is
-          why its App Store listing shows{' '}
-          <strong>Data Not Collected</strong>.
+          PINTR <strong>collects no data</strong> from the app. Its privacy
+          manifest declares no data collection or tracking.
         </p>
 
         <ul>
@@ -79,14 +69,13 @@ export default function PrivacyPage() {
             exports are all computed on your device, and the app keeps working
             with no connection at all.
           </li>
-          <li>Nothing is sold or shared with anyone.</li>
         </ul>
 
         <h2>Photos, camera, and files</h2>
 
         <p>
-          The app can only see an image after you choose it yourself, through
-          the Add Media menu:
+          You can choose a photo from the start screen or open the Add Media
+          menu in the toolbar.
         </p>
 
         <ul>
@@ -120,32 +109,15 @@ export default function PrivacyPage() {
         </p>
 
         <p>
-          The app keeps the picture you are working on and its settings on your
-          device, so the edit reopens the next time you launch the app. What it
-          keeps is a reduced working-size copy of the picture, not the original
-          file. It also keeps your last 5 edits, shown under{' '}
-          <strong>Recent</strong> on the start screen. Each one is stored as
-          that working copy, its settings, and a small thumbnail of the drawing.
-          All of this lives in the app&rsquo;s own storage on your device and is
-          never uploaded. For the sample pictures that come with the app, no
-          copy is made; only the settings are remembered.
+          PINTR stores a reduced working copy of the open picture, its name,
+          and drawing settings in app storage so the edit can reopen at launch.
+          When you close a picture or open another, PINTR can keep the previous
+          edit under <strong>Recent</strong> on the start screen. PINTR keeps up
+          to five recent edits with their settings and a drawing thumbnail.
+          Bundled samples use the copy already included with the app. Your
+          device backups may include PINTR’s saved edits and settings,
+          depending on your backup settings.
         </p>
-
-        <p>You can remove what the app keeps at any time:</p>
-
-        <ul>
-          <li>
-            <strong>Close Photo</strong> in the Add Media menu removes the open
-            picture.
-          </li>
-          <li>
-            <strong>Clear</strong> next to Recent removes the recent edits.
-          </li>
-          <li>
-            A recent edit is also dropped when newer ones push it past five.
-          </li>
-          <li>Deleting the app removes everything.</li>
-        </ul>
 
         <h2>Exported drawings</h2>
 
@@ -176,19 +148,18 @@ export default function PrivacyPage() {
         </ul>
 
         <p>
-          When you share an export, including a video, PINTR first writes the
-          file into app-owned temporary storage on your device. That file
-          leaves the app only when you send it somewhere yourself with the
-          system share sheet — to Files, Photos, Mail, or another app of your
-          choosing. PINTR does not upload it, and has no say in what the
-          destination app does with it afterwards.
+          PINTR can use temporary storage to prepare a shareable file. It
+          also stores generated videos there while you choose whether to share
+          them. The system share sheet hands the export to the destination you
+          choose, such as Files, Photos, or Mail. That destination handles the
+          copy according to its own settings and privacy policy.
         </p>
 
         <p>
-          Temporary export files are removed on a later launch of the app, so
-          save or share an export you want to keep rather than relying on that
-          temporary copy. Files saved through the save dialog, and items saved
-          to Photos, stay where you put them until you delete them there.
+          PINTR clears leftover temporary export files when it next launches.
+          Live Photo export uses temporary files that PINTR discards after
+          the save attempt. Copies you save or share are kept at the
+          destination you chose.
         </p>
 
         <p>
@@ -198,28 +169,24 @@ export default function PrivacyPage() {
           Add-only means the app can add items but cannot read or browse your
           library. iOS asks only the first time you use one of those two save
           buttons, and the rest of the app works without this permission. You
-          can change it in Settings → PINTR → Photos, or in Settings → Privacy
-          &amp; Security → Photos.
+          can change it in Settings → Apps → PINTR → Photos or in Settings →
+          Privacy &amp; Security → Photos.
         </p>
 
         <h2>Data retention and deletion</h2>
 
         <p>
-          There is no server-side user data to retain or delete, because the
-          app sends nothing anywhere. Everything stays under your control on
-          your device:
+          There is no PINTR account or server-side app data to delete. You
+          can manage saved edits, exports, and permissions on your device.
         </p>
 
         <ul>
           <li>
-            The working copy and settings of the picture you have open stay in
-            the app until you choose <strong>Close Photo</strong> in the Add
-            Media menu.
-          </li>
-          <li>
-            Your last 5 edits stay in the app until you tap{' '}
-            <strong>Clear</strong> next to Recent, or until newer edits push
-            them past five.
+            To remove the working copies, choose <strong>Close Photo</strong>{' '}
+            in the Add Media menu. Then tap <strong>Clear</strong> next to{' '}
+            <strong>Recent</strong> on the start screen and confirm. This clears
+            the recent edits together. Older edits also drop off as new ones
+            fill the five available slots.
           </li>
           <li>
             PNGs and Live Photos saved to Photos stay in your photo library, and
@@ -234,20 +201,18 @@ export default function PrivacyPage() {
             and are deleted there.
           </li>
           <li>
-            Temporary exports the app still holds are cleared on a later launch.
-          </li>
-          <li>
-            Deleting the app removes everything it stores: the open picture,
-            the recent edits, and any temporary exports.
+            Deleting the app removes its working copies, recent edits, and
+            temporary exports from the device. Manage any backup copies through
+            your backup settings.
           </li>
           <li>
             Camera permission can be changed or revoked at any time in Settings
-            → Privacy &amp; Security → Camera, or in Settings → PINTR.
+            → Privacy &amp; Security → Camera or Settings → Apps → PINTR.
           </li>
           <li>
             Permission to add to Photos can be changed or revoked at any time in
-            Settings → Privacy &amp; Security → Photos, or in Settings → PINTR →
-            Photos.
+            Settings → Privacy &amp; Security → Photos or Settings → Apps →
+            PINTR → Photos.
           </li>
         </ul>
 
@@ -269,14 +234,9 @@ export default function PrivacyPage() {
             agent in order to deliver the pages and keep the service secure.
           </li>
           <li>
-            The drawing tool page uses Google Analytics (Google LLC) to count
-            visits.
-          </li>
-          <li>
-            <strong>
-              This privacy page and the support page load no analytics and set
-              no cookies.
-            </strong>
+            The web drawing tool uses Google Analytics (Google LLC) to
+            measure visits. Google Analytics can use cookies for this purpose.
+            This privacy page and the support page do not load Google Analytics.
           </li>
           <li>
             The Brutalita typeface is loaded from brutalita.com, so that origin
@@ -284,11 +244,19 @@ export default function PrivacyPage() {
           </li>
         </ul>
 
+        <h2>Support email</h2>
+
+        <p>
+          If you email PINTR, Javier Bórquez uses your email address and the
+          details you provide to respond to your request. You can use the
+          contact address below to ask for deletion of information you sent.
+        </p>
+
         <h2>Children</h2>
 
         <p>
-          PINTR is not directed at children, and because it collects no data it
-          collects nothing from children either.
+          PINTR is not directed at children. The iPhone and iPad app does not
+          collect personal data from users of any age.
         </p>
 
         <h2>Changes to this policy</h2>

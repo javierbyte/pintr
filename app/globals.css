@@ -303,6 +303,13 @@ input[type='range'].toggle::-moz-range-thumb {
   color: #34495e;
 }
 
+.site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+}
+
 /*540 + 540 + 16 * 4*/
 @media screen and (max-width: 1144px) {
   html,
