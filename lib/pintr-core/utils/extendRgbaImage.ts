@@ -1,5 +1,4 @@
-import { PintrError } from '../types';
-import { clamp, toUint8Clamp, validateRgbaImage } from './shared';
+import { clamp, toUint8Clamp } from './shared';
 import type { RgbaImage } from './types';
 
 export type ExtendOptions = {
@@ -39,24 +38,13 @@ export function extendRgbaImage(
   picture: RgbaImage,
   { canvasWidth, canvasHeight, offsetX, offsetY }: ExtendOptions
 ): RgbaImage {
-  validateRgbaImage(picture);
-  if (!Number.isInteger(canvasWidth) || !Number.isInteger(canvasHeight)) {
-    throw new PintrError('extend canvas dimensions must be integers');
-  }
-  if (canvasWidth <= 0 || canvasHeight <= 0) {
-    throw new PintrError('extend canvas dimensions must be positive');
-  }
-  if (!Number.isInteger(offsetX) || !Number.isInteger(offsetY)) {
-    throw new PintrError('extend offsets must be integers');
-  }
-
   const { width, height } = picture;
   const source = picture.rgba;
 
   // A row and a column of zeros ahead of the picture so the four-corner lookup
   // needs no bounds tests. The largest entry is width * height * 255, which
   // overflows Uint32 past ~16.8 MP, so the prefix sums are held as Float64 —
-  // exact for integers well beyond the 100 MP validateRgbaImage allows.
+  // exact for integers well beyond any picture PINTR draws.
   const satWidth = width + 1;
   const sat = new Float64Array(satWidth * (height + 1) * 4);
 

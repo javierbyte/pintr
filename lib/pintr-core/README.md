@@ -1,128 +1,136 @@
-# PINTR core
+# PINTR core: canonical implementation
+
+This directory in the original PINTR repository (`~/Projects/pintr/pintr`) is
+PINTR's source of truth and reference implementation. Algorithm changes belong
+here first. The Apple app implements the same algorithm in Swift; its copied
+TypeScript files are reference fixtures, not another engine to evolve separately.
+
+## Three separate responsibilities
+
+| Layer | Owns | Does not own |
+| --- | --- | --- |
+| App / source preparation | Decode, orientation, resizing, crop policy, grayscale and alpha conversion, framing, padding, extension, vignette | Line selection |
+| PINTR core | Prepared grayscale image, configuration, seed, working-image feedback, cursor, random state, count; produce more coordinates on demand | Decoding, UI, rendering, animation, export, complete drawing archive |
+| Rendering / presentation | Store emitted coordinates, display any prefix, stroke style, incremental rasterization, reveal pacing, export | Choosing new coordinates or modifying generation state |
+
+Grayscale conversion is an app decision, even though its helper returns the
+core's input type. Nothing in core requires a particular decoder, resize size,
+crop, grayscale weighting, or vignette. Web and iOS can use their native image
+libraries. For identical coordinates they must supply identical prepared pixels,
+configuration, and seed.
+
+The `utils/` directory is a convenient collection of pure **app-side image
+helpers**, not part of the generation algorithm. Its location does not transfer
+image preparation responsibilities to PINTR core. `index.ts` and `utils/index.ts`
+are separate entry points. The core imports none of those image helpers.
+
+## What core does
+
+PINTR searches for straight lines that follow the darker parts of an image.
+It starts at the image centre. For each line it samples possible destinations,
+scores the average grayscale value along each candidate, and chooses a dark
+route. In continuous mode the next line begins at the previous endpoint. In
+independent-line mode it also samples darker starting positions.
+
+Periodically it lightens the working pixels covered by recent lines. This
+feedback makes subsequent searches explore areas that still need ink. The
+feedback uses deterministic 4×4 subpixel coverage and unions overlapping strokes
+within each feedback batch. This internal coverage calculation is numerical
+algorithm state, **not artwork rendering**; core never produces a bitmap to show.
+
+- `definition` (0–100) controls search effort and feedback cadence.
+- `contrast` (0–100) controls how strongly drawn areas are lightened.
+- `singleLine` selects continuous or independent segments.
+- `strokeWidth` (positive) affects feedback coverage, so changing it changes
+  future coordinates. A renderer may separately choose a display width, but the
+  usual app setting applies to both generation and rendering.
+- `seed` (uint32, optional) determines the random sequence. Pass one to make a
+  drawing reproducible; omitting it picks one at random.
+
+No target line count or maximum drawing length belongs to core. The app decides
+how much to request, retain, show, or export. Changing image/configuration/seed
+requires a new session; changing the visible count does not.
+
+## Input and streaming API
 
 ```ts
 import { createPintr } from './lib/pintr-core';
-import { preparePintrImage } from './lib/pintr-core/utils';
 
-const image = preparePintrImage({ width, height, rgba });
-const pintr = createPintr({
-  image,
-  config: {
-    contrast: 50,
-    definition: 50,
-    singleLine: true,
-    strokeWidth: 1.5,
-  },
+const session = createPintr({
+  image: { width, height, gray },
+  config: { contrast: 50, definition: 50, singleLine: true, strokeWidth: 1.5 },
   seed: 1234,
 });
-
-const first = pintr.next(128);
-draw(first.lines);
-
-// Nothing runs between calls. Calling next() continues at line 128.
-const second = pintr.next(128);
-draw(second.lines);
+const line = session.next(); // [[fromX, fromY], [toX, toY]]
+const another = session.next(); // continues the same drawing; does not replay
 ```
 
-The implementation is a local module for now; no package is created by this
-extraction. A future package can expose the same two entry points as
-`pintr-core` and `pintr-core/utils` without changing the API.
+`gray` is a `Uint8Array`, column-major (`gray[x * height + y]`), with
+0 = black and 255 = white, holding exactly width × height entries. The working
+image is copied, so the caller can reuse its prepared input. Inputs are not
+validated: the caller is trusted to pass a `definition` and `contrast` from 0 to
+100 and a positive `strokeWidth`.
 
-## Core API
+`next()` synchronously returns one new line. Returned lines are not retained as
+a complete history inside core. It retains only the working image, pending
+feedback lines, cursor, random state, and count needed to continue.
 
-The core receives prepared grayscale pixels and returns coordinates. It has no
-DOM, Canvas, decoder, renderer, timer, or platform dependency.
+Nothing runs between calls, and how the calls are grouped does not change the
+coordinates. There is no renderer, DOM, Canvas, timer, worker, or platform
+dependency. Pause means stop calling `next`; resume means call it again.
+Discarding a session ends that run.
 
-```ts
-createPintr({ image, config, seed? }): PintrSession;
+## Host and renderer contract
 
-session.next(count): PintrBatch;
-```
+The app stores returned batches once, in order. It tracks **generated**, **target**,
+and **visible** counts separately. Lowering the visible count draws a prefix of
+the stored coordinates immediately; it must not restart core or throw away its
+warm state. Raising it first reveals available coordinates, then requests more
+if necessary. A small look-ahead buffer can hide generation latency.
 
-`next(count)` synchronously generates exactly that many lines. The session is
-naturally paused as soon as the call returns; call it again whenever the host is
-ready. Its working image, cursor, and random generator stay warm between calls,
-and batch boundaries do not affect the generated coordinates.
+The host owns scheduling: small batches under a frame-time budget in a browser,
+a background task/actor on iOS, or larger synchronous batches in a CLI. The host chooses how
+many lines to ask for per frame and checks cancellation between calls. It must reject stale batches
+when image/configuration changes replace a session.
 
-The core only returns new lines. A host that needs the complete drawing owns
-that list and appends each batch to it. This keeps generation state small and
-lets a browser draw lines immediately without storing them twice.
+Rendering can animate the reveal while generation continues, cache raster
+prefixes to show fewer lines quickly, or replace an old drawing progressively.
+These are presentation policies: they must preserve stored straight-line
+coordinates and must not change the seed, feedback, or generation cursor.
+Screen and exports should use the same geometry.
 
-The input image is:
+## App-side helpers and current web behavior
 
-```ts
-type PintrImage = {
-  width: number;
-  height: number;
-  // Column-major: gray[x * height + y], where 0 is black and 255 is white.
-  gray: Uint8Array;
-};
-```
+`utils/` provides non-mutating operations on row-major, straight (unpremultiplied)
+RGBA byte arrays:
 
-PINTR copies the working pixels, so a prepared image can be reused to create
-independent sessions. Supplying a uint32 `seed` makes a run reproducible.
+- `preparePintrImage`: weighted grayscale (R .399, G .537, B .064), normalization,
+  alpha compositing onto white, and conversion to core's column-major layout.
+  The historical normalization treats alpha < 128 as white for extrema but uses
+  RGB for normalization before final alpha compositing. This is reference
+  behavior, not a grayscale rule imposed by core.
+- `resizeRgbaImage`: area averaging for reduction; optional bilinear enlargement.
+- `frameRgbaImage`: contain without cropping or stretching, preserve or select
+  aspect ratio, inset padding as a percentage of the canvas short side (0 ≤ p < 50).
+  The output longest side stays fixed; padding shrinks the picture within it.
+- `extendRgbaImage`: fill surrounding space using four nested distance-weighted
+  box averages, interpolated between radii. Summed-area tables keep this linear
+  in the canvas size. Original picture pixels are copied unchanged.
+- `applyVignette`: fade RGB toward white with distance, hardness, and square versus
+  source-aspect geometry; alpha is preserved.
 
-## Host scheduling
+The web app (`lib/preprocess.ts`) decodes its source at 1080 px on the longest
+side. Without extension it applies vignette to the picture before framing; with
+extension it frames/extends first and applies vignette to the whole canvas.
+The app offers original/common/paper ratios, padding, extension, and vignette,
+alongside the four core settings.
 
-A browser or React Native host should request small batches from its own frame
-loop:
+## Known boundaries and deviations
 
-```ts
-function frame() {
-  const remaining = targetLineCount - pintr.lineCount;
-  if (remaining <= 0) return;
+The original web core follows the three-layer contract. Its browser adapter
+(`lib/PINTR.ts`) combines host scheduling and immediate Canvas drawing, which is
+app code rather than core. It also stores the emitted coordinates, so lowering
+the line count with `setLineCount` repaints a prefix of them.
 
-  draw(pintr.next(Math.min(32, remaining)).lines);
-  requestAnimationFrame(frame);
-}
-```
-
-A CLI can use larger batches or generate its whole target in one call:
-
-```ts
-const lines = [];
-
-while (pintr.lineCount < targetLineCount) {
-  const batch = pintr.next(
-    Math.min(1000, targetLineCount - pintr.lineCount)
-  );
-  lines.push(...batch.lines);
-}
-
-writeCoordinates(lines);
-```
-
-## Optional image utilities
-
-`./lib/pintr-core/utils` contains pure, non-mutating helpers that are not needed
-by the generator itself:
-
-```ts
-preparePintrImage(rgbaImage): PintrImage;
-resizeRgbaImage(rgbaImage, { longestSide, allowUpscale? }): RgbaImage;
-applyVignette(rgbaImage, options): RgbaImage;
-frameRgbaImage(rgbaImage, { aspectRatio, padding, extend? }): RgbaImage;
-extendRgbaImage(rgbaImage, { canvasWidth, canvasHeight, offsetX, offsetY }): RgbaImage;
-```
-
-`frameRgbaImage` places the image, contained, on an opaque white canvas of the
-requested aspect ratio (`width / height`, or `null` to keep the source's).
-`padding` is a percentage of the canvas short side and insets the picture within
-that canvas, so the requested ratio always decides the output dimensions. With
-`extend`, the space around the picture is filled by `extendRgbaImage` instead of
-staying white.
-
-`extendRgbaImage` continues a picture outward over the canvas around it. Each
-pixel outside averages the picture pixels within its own distance of the nearest
-picture pixel, weighted so the nearest ones count for most. The fill leaves the
-edge sharp, grows blurrier the further it travels, and settles on the picture's
-overall tone far away from it — a diffusion outward rather than the edge pixel
-smearing. The weight comes from averaging four nested boxes, each half the radius
-of the one before, which counts the near pixels repeatedly; boxes rather than
-discs let a summed-area table answer any radius in constant time, so the pass
-stays linear in the canvas.
-
-`RgbaImage.rgba` is row-major, unpremultiplied RGBA in a `Uint8Array` or
-`Uint8ClampedArray`. Image decoding remains the host's responsibility: Canvas
-in a browser, the application's native image library in React Native, or a Node
-image library in a CLI.
+Source decoding/resampling and stroke rasterizers differ by platform; compare
+prepared bytes and coordinates for algorithm parity, not PNG bytes.

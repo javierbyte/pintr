@@ -44,7 +44,7 @@ export default function SupportPage() {
       </header>
 
       <main id="main" className="doc">
-        <p className="meta">Last updated: August 29, 2026.</p>
+        <p className="meta">Last updated: November 26, 2026.</p>
 
         <p>
           PINTR turns a photo into a plotter-like line drawing on your iPhone or
@@ -78,11 +78,13 @@ export default function SupportPage() {
 
         <ol>
           <li>
-            Tap <strong>Add Image</strong> and pick a source:{' '}
+            Tap <strong>Add Media</strong> in the toolbar and pick a source:{' '}
             <strong>Choose Photo</strong> for the photo library,{' '}
-            <strong>Take Photo</strong> for the camera, or{' '}
-            <strong>Open File…</strong> for an image file. On iPad you can also
-            drag an image into the app.
+            <strong>Take Photo</strong> for the camera,{' '}
+            <strong>Open File…</strong> for an image file, or{' '}
+            <strong>Samples…</strong> for a sample picture. You can also drag
+            an image into the app. The same menu has{' '}
+            <strong>Close Photo</strong>, which removes the open picture.
           </li>
           <li>
             The drawing starts immediately and fills in line by line while you
@@ -92,9 +94,16 @@ export default function SupportPage() {
             Adjust the controls. Every change redraws right away.
           </li>
           <li>
-            Tap <strong>Export</strong> to share the result as PNG or SVG.
+            Tap <strong>Export</strong> to save or share the result.
           </li>
         </ol>
+
+        <p>
+          The start screen also offers <strong>Try a Sample</strong> and a{' '}
+          <strong>Recent</strong> row with your last 5 edits. Tap{' '}
+          <strong>Clear</strong> next to Recent to remove them. When you come
+          back, the app reopens on the edit you left.
+        </p>
 
         <p>
           Photos with a clear subject, good contrast, and a light background
@@ -103,10 +112,23 @@ export default function SupportPage() {
 
         <h2>Controls</h2>
 
+        <p>
+          The controls live in the <strong>Sidebar</strong>, which you can
+          collapse and expand.
+        </p>
+
+        <p>
+          <strong>Drawing</strong>
+        </p>
+
         <ul>
           <li>
             <strong>Lines</strong> — how many strokes the drawing uses. More
-            lines mean more detail and a longer draw.
+            lines mean more detail and a longer draw.{' '}
+            <strong>Auto line count</strong> lets the app choose the number.
+          </li>
+          <li>
+            <strong>Stroke width</strong> — the thickness of each line.
           </li>
           <li>
             <strong>Contrast</strong> — how strongly light and dark areas are
@@ -117,43 +139,101 @@ export default function SupportPage() {
             detail rather than broad shapes.
           </li>
           <li>
-            <strong>Stroke width</strong> — the thickness of each line.
-          </li>
-          <li>
             <strong>Single continuous line</strong> — draws the whole image
             without lifting the pen, the classic plotter look.
           </li>
           <li>
-            <strong>New variation</strong> — picks a new seed, giving a
-            different drawing of the same photo. The current seed is shown next
-            to it.
+            <strong>New Generation</strong> — picks a new seed, giving a
+            different drawing of the same photo. The current seed is shown
+            under <strong>Info</strong>.
           </li>
         </ul>
 
         <p>
-          Pinch or use a trackpad to zoom, drag to pan, and double-tap to reset
-          the view. <strong>Fit Artwork</strong> returns the drawing to the
-          screen if you lose it while zoomed in.
+          <strong>Source</strong>
         </p>
-
-        <h2>Exporting PNG and SVG</h2>
 
         <ul>
           <li>
-            <strong>Share PNG</strong> exports the drawing as an image, at the
-            size of the prepared artwork.
+            <strong>Aspect ratio</strong> — the shape of the drawing: Original,
+            Square, portrait and landscape ratios, and the A4, Letter, and
+            Legal paper sizes.
           </li>
           <li>
-            <strong>Share SVG</strong> exports vector paths, for plotters,
-            cutters, and editors like Illustrator, Affinity, Figma, or Inkscape.
+            <strong>Padding</strong> — the space around the image.
           </li>
           <li>
-            Both open the system share sheet, from which you can save to Files
-            or Photos, send the file, or open it in another app.
+            <strong>Extend image</strong>.
           </li>
           <li>
-            Exports are written to temporary storage inside the app and are
-            cleared on a later launch, so save or send the file rather than
+            <strong>Vignette</strong>, adjusted with{' '}
+            <strong>Vignette distance</strong>,{' '}
+            <strong>Vignette hardness</strong>, and{' '}
+            <strong>Square vignette</strong>.
+          </li>
+          <li>
+            <strong>Remove background</strong> — finds the subject of the photo
+            on your device and draws it without its background.
+          </li>
+          <li>
+            <strong>Preview</strong> — shows the source image the drawing is
+            made from.
+          </li>
+        </ul>
+
+        <p>
+          <strong>Undo</strong> and <strong>Redo</strong> step back and forward
+          through your changes, and <strong>Reset All Settings</strong> returns
+          every control to its default. Pinch to zoom and drag to pan.{' '}
+          <strong>Fit Artwork</strong> returns the drawing to the screen if you
+          lose it while zoomed in.
+        </p>
+
+        <h2>Exporting</h2>
+
+        <ul>
+          <li>
+            <strong>PNG</strong> — <strong>Save PNG to Photos</strong> or{' '}
+            <strong>Share PNG</strong>. Options: <strong>Size</strong> and{' '}
+            <strong>Transparent background</strong>.
+          </li>
+          <li>
+            <strong>SVG</strong> — vector paths, for plotters, cutters, and
+            editors like Illustrator, Affinity, Figma, or Inkscape.{' '}
+            <strong>Save to Files</strong> or <strong>Share</strong>. Option:{' '}
+            <strong>Transparent background</strong>.
+          </li>
+          <li>
+            <strong>PDF</strong> — <strong>Save to Files</strong> or{' '}
+            <strong>Share</strong>. Option:{' '}
+            <strong>Transparent background</strong>.
+          </li>
+          <li>
+            <strong>Coordinates</strong> — <strong>Save to Files</strong> or{' '}
+            <strong>Share</strong>. Options: <strong>File type</strong> (JSON
+            or CSV) and <strong>Normalize to 0–1</strong>.
+          </li>
+          <li>
+            <strong>Video</strong> — shows the drawing being made line by line.
+            Tap <strong>Create Video</strong>, then{' '}
+            <strong>Share Video</strong>.
+          </li>
+          <li>
+            <strong>Live Photo</strong> — also shows the drawing being made
+            line by line. Tap <strong>Save Live Photo to Photos</strong>.
+          </li>
+          <li>
+            <strong>Save to Files</strong> opens the system save dialog, so you
+            choose where the file goes. The Share buttons open the system share
+            sheet, from which you can send the file or open it in another app.
+          </li>
+          <li>
+            Long exports show their progress and a{' '}
+            <strong>Cancel Export</strong> button.
+          </li>
+          <li>
+            Shared exports are written to temporary storage inside the app and
+            are cleared on a later launch, so save or send the file rather than
             relying on that temporary copy.
           </li>
         </ul>
@@ -163,8 +243,8 @@ export default function SupportPage() {
         <p>
           <strong>Photos and files.</strong> Choosing a photo or opening a file
           goes through the system picker, which hands PINTR only the item you
-          selected. No separate permission is requested, and PINTR never gets
-          access to your whole library.
+          selected. No permission is requested for this, and PINTR never gets
+          read access to your library.
         </p>
 
         <p>
@@ -175,6 +255,19 @@ export default function SupportPage() {
           PINTR there. Return to the app and choose{' '}
           <strong>Take Photo</strong> again. Everything else in the app keeps
           working without camera access.
+        </p>
+
+        <p>
+          <strong>Saving to Photos.</strong> The first time you use{' '}
+          <strong>Save PNG to Photos</strong> or{' '}
+          <strong>Save Live Photo to Photos</strong>, iOS asks for add-only
+          access to your photo library. Add-only means PINTR can add items but
+          cannot read or browse your library. If saving is refused, the app
+          says &quot;Allow PINTR to add photos in Settings, then try
+          again.&quot; and offers an <strong>Open Settings</strong> button. You
+          can also turn it back on in Settings → PINTR → Photos, or in Settings
+          → Privacy &amp; Security → Photos. Everything else in the app keeps
+          working without this permission.
         </p>
 
         <h2>Troubleshooting</h2>
@@ -216,6 +309,45 @@ export default function SupportPage() {
           failing, note what you were exporting and email{' '}
           <a href="mailto:pintr@javier.xyz">pintr@javier.xyz</a>.
         </p>
+
+        <h3>
+          &quot;No distinct foreground subject was found in this photo.&quot;
+        </h3>
+        <p>
+          <strong>Remove background</strong> could not find a subject. Turn it
+          off, or use a photo with a clearer subject.
+        </p>
+
+        <h3>
+          &quot;Allow PINTR to add photos in Settings, then try again.&quot;
+        </h3>
+        <p>
+          PINTR does not have permission to add to your photo library. See{' '}
+          <strong>Saving to Photos</strong> under Permissions above.
+        </p>
+
+        <h3>&quot;Photo Library access is restricted on this device.&quot;</h3>
+        <p>
+          Photos access is blocked by Screen Time or a device profile.
+        </p>
+
+        <h3>&quot;This device cannot encode HEVC at that size.&quot;</h3>
+        <p>
+          Video or Live Photo export at this drawing size is not supported on
+          the device. Try a smaller aspect ratio or source.
+        </p>
+
+        <h3>&quot;Could not encode the complete animation.&quot;</h3>
+        <p>Try the export again.</p>
+
+        <h3>
+          &quot;Photos could not open this Live Photo pair. Nothing was
+          saved.&quot;
+        </h3>
+        <p>Try the export again.</p>
+
+        <h3>&quot;PINTR could not render that export.&quot;</h3>
+        <p>Try the export again.</p>
 
         <h2>Privacy</h2>
 

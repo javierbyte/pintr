@@ -1,4 +1,4 @@
-import { clamp, validateRgbaImage } from './shared';
+import { clamp } from './shared';
 import type { RgbaImage } from './types';
 
 export type VignetteOptions = {
@@ -11,7 +11,6 @@ export function applyVignette(
   image: RgbaImage,
   { vignetteDistance, vignetteHardness, vignetteSquare }: VignetteOptions
 ): RgbaImage {
-  validateRgbaImage(image);
   const { width: W, height: H } = image;
   const rgba = new Uint8ClampedArray(image.rgba);
   const SHORT_SIDE = Math.min(W, H);
